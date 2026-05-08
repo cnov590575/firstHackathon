@@ -5,6 +5,7 @@ import dao.UserDAO;
 import dao.model.Message;
 import sorteddata.sortedarraylist.SortedArrayList;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import dao.model.User;
@@ -17,17 +18,42 @@ import java.util.UUID;
 public class ModerationTools {
 	public static boolean addReport(UUID message, UUID user, long timestamp) {
 		Report report = new Report(message, user, timestamp);
-		ReportList list = new ReportList(new ArrayList<Report>(),new HashMap<>());
-		list.addReport(report);
+        ArrayList<Report> currentreports = AllReports.allReports;
+        if (AllReports.allReports == null) {
+            AllReports.allReports = new ArrayList<Report>();
+        }
+
+        for (Report curReport : currentreports) {
+            if (report.equals(curReport)) {
+                return false;
+            }
+        }
+		AllReports.allReports.add(report);
+        return true;
 	}
 	
 	public static boolean removeReport(UUID message, UUID user, long timestamp) {
-		// TODO: task 1
+        if (AllReports.allReports == null) {
+            AllReports.allReports = new ArrayList<Report>();
+        }
+        Report report = new Report(message, user, timestamp);
+        for (Report curReport : AllReports.allReports) {
+            if (report.equals(curReport)) {
+                AllReports.allReports.remove(report);
+                return true;
+            }
+        }
 		return false;
 	}
 	
 	public static boolean hasReported(UUID message, UUID user) {
-		// TODO: task 1
+        Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
+
+        for (Report curReport : AllReports.allReports) {
+            if (curReport.message().equals(message)&&curReport.user().equals(user)) {
+                return true;
+            }
+        }
 		return false;
 	}
 	
