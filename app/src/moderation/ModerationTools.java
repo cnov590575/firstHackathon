@@ -13,6 +13,9 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.*;
 
+import static moderation.IteratorFactory.messageIterator;
+import static moderation.RetrieveReportedList.getReportedList;
+
 
 public class ModerationTools {
 	public static boolean addReport(UUID message, UUID user, long timestamp) {
@@ -78,37 +81,21 @@ public class ModerationTools {
 	}
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) throws IOException {
+        IOException IOException = new IOException();
+        if (amount < 0) throw IOException;
         List<Report> reportList = AllReports.allReports;
         List<Message> messageList = new ArrayList<>();
         Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
 
-        for (Report report : reportList) {
-            Message message = null;
-            while (allMessages.hasNext()) {
-                Message curMessage = allMessages.next();
-                if (curMessage.id() == report.message()) {
-                    message = curMessage;
-                    break;
-                }
-            }
-            if (message != null) messageList.add(message);
-        }
-
-        IOException IOException = new IOException();
+        getReportedList(reportList, messageList, allMessages);
         switch (strategy) {
             case "OLDEST" -> {
                 SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
-                for (Message message : messageList) {
-                    sorted.insert(message);
-                }
-                return sorted.getAll();
+                return messageIterator(sorted, messageList);
             }
             case "MOST" -> {
                 SortedArrayList<Message> sorted = new SortedArrayList<>(MostReportedComparator.getInstance());
-                for (Message message : messageList) {
-                    sorted.insert(message);
-                }
-                return sorted.getAll();
+                return messageIterator(sorted, messageList);
             }
             default -> throw IOException;
         }
