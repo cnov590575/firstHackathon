@@ -1,5 +1,7 @@
 package persistentdata;
 
+import moderation.Report;
+import moderation.ReportList;
 import persistentdata.formatted.*;
 import persistentdata.io.IOFactory;
 import persistentdata.serialization.*;
