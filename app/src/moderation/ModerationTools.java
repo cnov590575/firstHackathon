@@ -1,25 +1,14 @@
 package moderation;
-
 import dao.PostDAO;
 import dao.UserDAO;
 import dao.MessageComparator;
-import dao.PostDAO;
 import dao.model.Message;
 import sorteddata.sortedarraylist.SortedArrayList;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import dao.model.User;
-
 import java.util.Iterator;
 import java.util.UUID;
-import sorteddata.sortedarraylist.SortedArrayList;
-
 import java.util.*;
-
-import static com.sun.org.apache.xml.internal.serializer.utils.Utils.messages;
-
 
 
 public class ModerationTools {
