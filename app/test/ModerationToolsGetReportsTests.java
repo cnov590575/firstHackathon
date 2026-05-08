@@ -25,13 +25,14 @@ public class ModerationToolsGetReportsTests {
 
     @Before
     public void createReports() {
-        UserDAO newInstance = UserDAO.getInstance();
         UUID carlUser = UUID.randomUUID();
         UUID threadUUID = UUID.randomUUID();
         UUID oldestMessageUUID = UUID.randomUUID();
         UUID youngestMessageUUID = UUID.randomUUID();
         UUID offensiveMessageUUID = UUID.randomUUID();
         UUID kindMessageUUID = UUID.randomUUID();
+        PostDAO newPostDAO = PostDAO.getInstance();
+        newPostDAO.add(new Post(threadUUID,carlUser,"Hello"));
         Message oldestMessage = new Message(oldestMessageUUID, carlUser, threadUUID, 100, "I am the oldest message", new MessageVisibility(true));
         ModerationTools.addReport(oldestMessageUUID, carlUser, 200);
         Message youngestMessage = new Message(youngestMessageUUID, carlUser, threadUUID, 500, "I am the youngest message", new MessageVisibility(true));

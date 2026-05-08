@@ -82,7 +82,7 @@ public class ModerationTools {
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) throws IOException {
         IOException IOException = new IOException();
-        if (amount < 0) throw IOException;
+        if (amount < 1) throw IOException;
 
         List<Report> reportList = AllReports.allReports;
         List<Message> messageList = new ArrayList<>();
