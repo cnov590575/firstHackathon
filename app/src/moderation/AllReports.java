@@ -7,7 +7,7 @@ public class AllReports {
     public static ArrayList<Report> allReports;
 
 
-    public int timesReported(UUID message) {
+    public static int timesReported(UUID message) {
         int reportedtimes = 0;
         for (Report report : allReports) {
             if (report.message().equals(message)) {

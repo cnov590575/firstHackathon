@@ -1,9 +1,12 @@
 package moderation;
+import dao.MostReportedComparator;
 import dao.PostDAO;
 import dao.UserDAO;
 import dao.MessageComparator;
 import dao.model.Message;
 import sorteddata.sortedarraylist.SortedArrayList;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import dao.model.User;
 import java.util.Iterator;
@@ -74,13 +77,24 @@ public class ModerationTools {
         return true;
 	}
 	
-	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
-        List<Report> reportList = AllReports.getAllReports();
+	public static Iterator<Message> getReportedMessages(String strategy, int amount) throws IOException {
+        List<Report> reportList = AllReports.allReports;
         List<Message> messageList = new ArrayList<>();
+        Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
+
         for (Report report : reportList) {
-            messageList.add(report.message);
+            Message message = null;
+            while (allMessages.hasNext()) {
+                Message curMessage = allMessages.next();
+                if (curMessage.id() == report.message()) {
+                    message = curMessage;
+                    break;
+                }
+            }
+            if (message != null) messageList.add(message);
         }
 
+        IOException IOException = new IOException();
         switch (strategy) {
             case "OLDEST" -> {
                 SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
@@ -90,9 +104,13 @@ public class ModerationTools {
                 return sorted.getAll();
             }
             case "MOST" -> {
-                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
-            };
-            default -> ;
+                SortedArrayList<Message> sorted = new SortedArrayList<>(MostReportedComparator.getInstance());
+                for (Message message : messageList) {
+                    sorted.insert(message);
+                }
+                return sorted.getAll();
+            }
+            default -> throw IOException;
         }
     }
 }
