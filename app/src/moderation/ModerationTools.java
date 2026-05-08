@@ -1,33 +1,88 @@
 package moderation;
 
+import dao.PostDAO;
+import dao.UserDAO;
 import dao.MessageComparator;
 import dao.PostDAO;
 import dao.model.Message;
+import sorteddata.sortedarraylist.SortedArrayList;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import dao.model.User;
+
+import java.util.Iterator;
+import java.util.UUID;
 import sorteddata.sortedarraylist.SortedArrayList;
 
 import java.util.*;
 
 import static com.sun.org.apache.xml.internal.serializer.utils.Utils.messages;
 
+
+
 public class ModerationTools {
 	public static boolean addReport(UUID message, UUID user, long timestamp) {
-		// TODO: task 1
-		return false;
+		Report report = new Report(message, user, timestamp);
+        ArrayList<Report> currentreports = AllReports.allReports;
+        if (AllReports.allReports == null) {
+            AllReports.allReports = new ArrayList<Report>();
+        }
+
+        for (Report curReport : currentreports) {
+            if (report.equals(curReport)) {
+                return false;
+            }
+        }
+		AllReports.allReports.add(report);
+        return true;
 	}
 	
 	public static boolean removeReport(UUID message, UUID user, long timestamp) {
-		// TODO: task 1
+        if (AllReports.allReports == null) {
+            AllReports.allReports = new ArrayList<Report>();
+        }
+        Report report = new Report(message, user, timestamp);
+        for (Report curReport : AllReports.allReports) {
+            if (report.equals(curReport)) {
+                AllReports.allReports.remove(report);
+                return true;
+            }
+        }
 		return false;
 	}
 	
 	public static boolean hasReported(UUID message, UUID user) {
-		// TODO: task 1
+        Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
+
+        for (Report curReport : AllReports.allReports) {
+            if (curReport.message().equals(message)&&curReport.user().equals(user)) {
+                return true;
+            }
+        }
 		return false;
 	}
 	
 	public static boolean setHidden(UUID message, UUID user, boolean hidden) {
-		// TODO: task 2
-		return false;
+        User realUser = UserDAO.getInstance().getByUUID(user);
+        Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
+        Message realMessage = null;
+
+        if (realUser==null) return false;
+        if (!realUser.role().equals(User.Role.Admin)) return false;
+        while (allMessages.hasNext()) {
+            Message curMessage = allMessages.next();
+            if (curMessage.id() == message) {
+                realMessage = curMessage;
+                break;
+            }
+        }
+        if (realMessage == null) return false;
+
+        realMessage.visible().setVisible(!hidden);
+
+        return true;
 	}
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
