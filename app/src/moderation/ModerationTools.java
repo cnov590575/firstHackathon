@@ -75,10 +75,20 @@ public class ModerationTools {
 	}
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
-        List<Report> reportList = AllReports.getAllReports();
+        List<Report> reportList = AllReports.allReports;
         List<Message> messageList = new ArrayList<>();
+        Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
+
         for (Report report : reportList) {
-            messageList.add(report.message);
+            Message message = null;
+            while (allMessages.hasNext()) {
+                Message curMessage = allMessages.next();
+                if (curMessage.id() == report.message()) {
+                    message = curMessage;
+                    break;
+                }
+            }
+            if (message != null) messageList.add(message);
         }
 
         switch (strategy) {
