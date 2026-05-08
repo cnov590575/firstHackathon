@@ -30,10 +30,11 @@ public class Post implements HasUUID {
 
     /**
      * Returns a sorted arraylist of all messages that should be visible based on timestamp.
-     * If isAdmin is true,
+     * If isAdmin is true, returns a list of all messages
+     * Else, returns a list with all of the
      *
-     * @param isAdmin
-     * @return
+     * @param isAdmin Whether or not the user calling the file is an admin
+     * @return a list of all the files that should be visible to the user
      */
 	public SortedData<Message> getVisibleMessages(boolean isAdmin) {
         Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();

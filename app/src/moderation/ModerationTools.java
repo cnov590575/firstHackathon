@@ -40,7 +40,7 @@ public class ModerationTools {
         }
         if (realMessage == null) return false;
 
-        realMessage.visible().setVisible(false);
+        realMessage.visible().setVisible(!hidden);
 
         return true;
 	}
