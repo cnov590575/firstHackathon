@@ -1,18 +1,14 @@
 package moderation;
-
 import dao.PostDAO;
 import dao.UserDAO;
+import dao.MessageComparator;
 import dao.model.Message;
 import sorteddata.sortedarraylist.SortedArrayList;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import dao.model.User;
-
 import java.util.Iterator;
 import java.util.UUID;
-
+import java.util.*;
 
 
 public class ModerationTools {
@@ -79,7 +75,24 @@ public class ModerationTools {
 	}
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
-		// TODO: task 4
-		return null;
-	}
+        List<Report> reportList = AllReports.getAllReports();
+        List<Message> messageList = new ArrayList<>();
+        for (Report report : reportList) {
+            messageList.add(report.message);
+        }
+
+        switch (strategy) {
+            case "OLDEST" -> {
+                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
+                for (Message message : messageList) {
+                    sorted.insert(message);
+                }
+                return sorted.getAll();
+            }
+            case "MOST" -> {
+                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
+            };
+            default -> ;
+        }
+    }
 }
