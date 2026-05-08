@@ -1,23 +1,29 @@
 package moderation;
+import dao.MostReportedComparator;
 import dao.PostDAO;
 import dao.UserDAO;
 import dao.MessageComparator;
 import dao.model.Message;
 import sorteddata.sortedarraylist.SortedArrayList;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import dao.model.User;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.*;
 
+import static moderation.IteratorFactory.messageIterator;
+import static moderation.RetrieveReportedList.getReportedList;
+
 
 public class ModerationTools {
 	public static boolean addReport(UUID message, UUID user, long timestamp) {
 		Report report = new Report(message, user, timestamp);
-        ArrayList<Report> currentreports = AllReports.allReports;
         if (AllReports.allReports == null) {
             AllReports.allReports = new ArrayList<Report>();
         }
+        ArrayList<Report> currentreports = AllReports.allReports;
 
         for (Report curReport : currentreports) {
             if (report.equals(curReport)) {
@@ -58,14 +64,8 @@ public class ModerationTools {
         Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
         Message realMessage = null;
 
-        if (realUser==null) {
-            System.out.println("REalusernull");
-            return false;
-        }
-        if (!realUser.role().equals(User.Role.Admin)) {
-            System.out.println("ADSAJODIJSAOIDJ");
-            return false;
-        }
+        if (realUser==null) return false;
+        if (!realUser.role().equals(User.Role.Admin)) return false;
         while (allMessages.hasNext()) {
             Message curMessage = allMessages.next();
             if (curMessage.id() == message) {
@@ -73,36 +73,32 @@ public class ModerationTools {
                 break;
             }
         }
-        if (realMessage == null) {
-            System.out.println("ASBIUDHIWUH");
-            return false;
-        }
+        if (realMessage == null) return false;
 
         realMessage.visible().setVisible(!hidden);
 
         return true;
 	}
 	
-	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
-//        List<Report> reportList = AllReports.getAllReports();
-//        List<Message> messageList = new ArrayList<>();
-//        for (Report report : reportList) {
-//            messageList.add(report.message);
-//        }
-//
-//        switch (strategy) {
-//            case "OLDEST" -> {
-//                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
-//                for (Message message : messageList) {
-//                    sorted.insert(message);
-//                }
-//                return sorted.getAll();
-//            }
-//            case "MOST" -> {
-//                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
-//            };
-//            default -> ;
-//        }
-        return null;
+	public static Iterator<Message> getReportedMessages(String strategy, int amount) throws IOException {
+        IOException IOException = new IOException();
+        if (amount < 1) throw IOException;
+
+        List<Report> reportList = AllReports.allReports;
+        List<Message> messageList = new ArrayList<>();
+        Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
+        getReportedList(reportList, messageList, allMessages);
+
+        switch (strategy) {
+            case "OLDEST" -> {
+                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
+                return messageIterator(sorted, messageList);
+            }
+            case "MOST" -> {
+                SortedArrayList<Message> sorted = new SortedArrayList<>(MostReportedComparator.getInstance());
+                return messageIterator(sorted, messageList);
+            }
+            default -> throw IOException;
+        }
     }
 }
