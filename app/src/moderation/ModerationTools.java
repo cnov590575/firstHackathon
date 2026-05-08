@@ -3,15 +3,22 @@ package moderation;
 import dao.PostDAO;
 import dao.UserDAO;
 import dao.model.Message;
+import sorteddata.sortedarraylist.SortedArrayList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import dao.model.User;
 
 import java.util.Iterator;
 import java.util.UUID;
 
+
+
 public class ModerationTools {
 	public static boolean addReport(UUID message, UUID user, long timestamp) {
-		// TODO: task 1
-		return false;
+		Report report = new Report(message, user, timestamp);
+		ReportList list = new ReportList(new ArrayList<Report>(),new HashMap<>());
+		list.addReport(report);
 	}
 	
 	public static boolean removeReport(UUID message, UUID user, long timestamp) {
