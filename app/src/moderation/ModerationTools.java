@@ -25,7 +25,6 @@ public class ModerationTools {
 	}
 	
 	public static boolean setHidden(UUID message, UUID user, boolean hidden) {
-		// TODO: task 2 CARL CARL CARL
         User realUser = UserDAO.getInstance().getByUUID(user);
         Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
         Message realMessage = null;
