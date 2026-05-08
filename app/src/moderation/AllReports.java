@@ -1,10 +1,6 @@
 package moderation;
 
-import dao.DAO;
-import dao.PostDAO;
-
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.UUID;
 
 public class AllReports {
