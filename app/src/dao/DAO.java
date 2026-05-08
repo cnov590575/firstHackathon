@@ -12,6 +12,7 @@ public abstract class DAO<T extends HasUUID> {
 		clear();
 	}
 
+// hi
 	protected final Comparator<T> comparator;
 
 	protected SortedData<T> data;
