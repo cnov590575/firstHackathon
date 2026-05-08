@@ -17,10 +17,10 @@ import java.util.*;
 public class ModerationTools {
 	public static boolean addReport(UUID message, UUID user, long timestamp) {
 		Report report = new Report(message, user, timestamp);
-        ArrayList<Report> currentreports = AllReports.allReports;
         if (AllReports.allReports == null) {
             AllReports.allReports = new ArrayList<Report>();
         }
+        ArrayList<Report> currentreports = AllReports.allReports;
 
         for (Report curReport : currentreports) {
             if (report.equals(curReport)) {

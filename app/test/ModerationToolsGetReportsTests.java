@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import dao.model.Message;
+
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
 import dao.UserDAO;
@@ -42,36 +44,45 @@ public class ModerationToolsGetReportsTests {
     }
 
     // OLDEST and MOST are valid strategies, anything else should return exception
-    @Test(expected = NullPointerException.class, timeout=1000)
-    public void testInvalidStrategies1() {
+    @Test(expected = IOException.class, timeout=1000)
+    public void testInvalidStrategies1() throws IOException {
         Iterator<Message> test = ModerationTools.getReportedMessages("NOTOLDEST", 1);
     }
-    @Test(expected = NullPointerException.class, timeout=1000)
-    public void testInvalidStrategies2() {
+    @Test(expected = IOException.class, timeout=1000)
+    public void testInvalidStrategies2() throws IOException {
         Iterator<Message> test = ModerationTools.getReportedMessages("MOSTEST", 1);
     }
-    @Test(expected = NullPointerException.class, timeout=1000)
-    public void testInvalidStrategies3() {
+    @Test(expected = IOException.class, timeout=1000)
+    public void testInvalidStrategies3() throws IOException {
         Iterator<Message> test = ModerationTools.getReportedMessages("MOST ", 1);
     }
-    @Test(expected = NullPointerException.class, timeout=1000)
-    public void testInvalidStrategies4() {
+    @Test(expected = IOException.class, timeout=1000)
+    public void testInvalidStrategies4() throws IOException {
         Iterator<Message> test = ModerationTools.getReportedMessages(" OLDEST", 1);
     }
-    @Test(expected = NullPointerException.class, timeout=1000)
-    public void testInvalidAmounts1() {
+    @Test(expected = IOException.class, timeout=1000)
+    public void testInvalidAmounts1() throws IOException {
         Iterator<Message> test = ModerationTools.getReportedMessages("OLDEST", 0);
     }
-    public void testInvalidAmounts2() {
+    @Test(expected = IOException.class, timeout=1000)
+    public void testInvalidAmounts2() throws IOException {
         Iterator<Message> test = ModerationTools.getReportedMessages("MOST", (-1));
     }
     @Test(timeout=1000)
     public void returnOldestEntry() {
-        assertEquals(ModerationTools.getReportedMessages("OLDEST", 1).next().message(), "I am the oldest message");
+        try {
+            assertEquals(ModerationTools.getReportedMessages("OLDEST", 1).next().message(), "I am the oldest message");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test(timeout=1000)
     public void returnMostEntry() {
-        assertEquals(ModerationTools.getReportedMessages("MOST", 1).next().message(), "Cats are better than dogs");
+        try {
+            assertEquals(ModerationTools.getReportedMessages("MOST", 1).next().message(), "Cats are better than dogs");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

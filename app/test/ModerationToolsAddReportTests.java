@@ -29,7 +29,6 @@ public class ModerationToolsAddReportTests {
     public void testAddDuplicateReport() {
         UUID messageUUID = UUID.randomUUID();
         UUID userUUID = UUID.randomUUID();
-        System.out.println(ModerationTools.getReportedMessages("MOST", 1));
         ModerationTools.addReport(messageUUID, userUUID, 1);
         assertFalse(ModerationTools.addReport(messageUUID, userUUID, 1));
 
