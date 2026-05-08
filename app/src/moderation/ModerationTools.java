@@ -83,11 +83,12 @@ public class ModerationTools {
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) throws IOException {
         IOException IOException = new IOException();
         if (amount < 0) throw IOException;
+
         List<Report> reportList = AllReports.allReports;
         List<Message> messageList = new ArrayList<>();
         Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
-
         getReportedList(reportList, messageList, allMessages);
+
         switch (strategy) {
             case "OLDEST" -> {
                 SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
