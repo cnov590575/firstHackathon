@@ -58,8 +58,14 @@ public class ModerationTools {
         Iterator<Message> allMessages = PostDAO.getInstance().getAllMessages();
         Message realMessage = null;
 
-        if (realUser==null) return false;
-        if (!realUser.role().equals(User.Role.Admin)) return false;
+        if (realUser==null) {
+            System.out.println("REalusernull");
+            return false;
+        }
+        if (!realUser.role().equals(User.Role.Admin)) {
+            System.out.println("ADSAJODIJSAOIDJ");
+            return false;
+        }
         while (allMessages.hasNext()) {
             Message curMessage = allMessages.next();
             if (curMessage.id() == message) {
@@ -67,7 +73,10 @@ public class ModerationTools {
                 break;
             }
         }
-        if (realMessage == null) return false;
+        if (realMessage == null) {
+            System.out.println("ASBIUDHIWUH");
+            return false;
+        }
 
         realMessage.visible().setVisible(!hidden);
 
@@ -75,24 +84,25 @@ public class ModerationTools {
 	}
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
-        List<Report> reportList = AllReports.getAllReports();
-        List<Message> messageList = new ArrayList<>();
-        for (Report report : reportList) {
-            messageList.add(report.message);
-        }
-
-        switch (strategy) {
-            case "OLDEST" -> {
-                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
-                for (Message message : messageList) {
-                    sorted.insert(message);
-                }
-                return sorted.getAll();
-            }
-            case "MOST" -> {
-                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
-            };
-            default -> ;
-        }
+//        List<Report> reportList = AllReports.getAllReports();
+//        List<Message> messageList = new ArrayList<>();
+//        for (Report report : reportList) {
+//            messageList.add(report.message);
+//        }
+//
+//        switch (strategy) {
+//            case "OLDEST" -> {
+//                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
+//                for (Message message : messageList) {
+//                    sorted.insert(message);
+//                }
+//                return sorted.getAll();
+//            }
+//            case "MOST" -> {
+//                SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
+//            };
+//            default -> ;
+//        }
+        return null;
     }
 }
