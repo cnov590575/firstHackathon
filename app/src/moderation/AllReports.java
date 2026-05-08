@@ -9,4 +9,7 @@ import java.util.Comparator;
 public class AllReports {
     public static ArrayList<Report> allReports;
 
+    public static ArrayList<Report> getAllReports() {
+        return allReports;
+    }
 }

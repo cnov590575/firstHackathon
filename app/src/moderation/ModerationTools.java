@@ -75,12 +75,12 @@ public class ModerationTools {
 	}
 	
 	public static Iterator<Message> getReportedMessages(String strategy, int amount) {
-        List<Report> reportList = AllReport.getAll();
+        List<Report> reportList = AllReports.getAllReports();
         List<Message> messageList = new ArrayList<>();
         for (Report report : reportList) {
             messageList.add(report.message);
         }
-        Map<Report, Integer> reportCount = reportList.getAll();
+
         switch (strategy) {
             case "OLDEST" -> {
                 SortedArrayList<Message> sorted = new SortedArrayList<>(MessageComparator.getInstance());
