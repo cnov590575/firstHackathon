@@ -21,7 +21,7 @@ public class ModerationTools {
 	}
 	
 	public static boolean setHidden(UUID message, UUID user, boolean hidden) {
-		// TODO: task 2
+		// TODO: task 2 CARL CARL CARL
 		return false;
 	}
 	
