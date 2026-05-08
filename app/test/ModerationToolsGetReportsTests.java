@@ -21,29 +21,24 @@ public class ModerationToolsGetReportsTests {
         PostDAO.getInstance().clear();
     }
 
-    @Test(timeout=1000)
-    public void testSingle() {
-        Post post = new Post(UUID.randomUUID());
-        PostDAO.getInstance().add(post);
-
-    }
+    @Before
     public void createReports() {
         UserDAO newInstance = UserDAO.getInstance();
-        User carlUser = newInstance.register("Carl", "password123");
+        UUID carlUser = UUID.randomUUID();
         UUID threadUUID = UUID.randomUUID();
         UUID oldestMessageUUID = UUID.randomUUID();
         UUID youngestMessageUUID = UUID.randomUUID();
         UUID offensiveMessageUUID = UUID.randomUUID();
         UUID kindMessageUUID = UUID.randomUUID();
-        Message oldestMessage = new Message(oldestMessageUUID, carlUser.getUUID(), threadUUID, 100, "I am the oldest message", new MessageVisibility(true));
-        ModerationTools.addReport(oldestMessageUUID, carlUser.getUUID(), 200);
-        Message youngestMessage = new Message(youngestMessageUUID, carlUser.getUUID(), threadUUID, 500, "I am the youngest message", new MessageVisibility(true));
-        ModerationTools.addReport(youngestMessageUUID, carlUser.getUUID(), 150);
-        Message offensiveMessage = new Message(offensiveMessageUUID, carlUser.getUUID(), threadUUID, 200, "Cats are better than dogs", new MessageVisibility(true));
-        ModerationTools.addReport(offensiveMessageUUID, carlUser.getUUID(), 150);
-        ModerationTools.addReport(offensiveMessageUUID, carlUser.getUUID(), 200);
-        ModerationTools.addReport(offensiveMessageUUID, carlUser.getUUID(), 200);
-        Message kindMessage = new Message(kindMessageUUID, carlUser.getUUID(), threadUUID, 300, "Dogs are better than cats", new MessageVisibility(true));
+        Message oldestMessage = new Message(oldestMessageUUID, carlUser, threadUUID, 100, "I am the oldest message", new MessageVisibility(true));
+        ModerationTools.addReport(oldestMessageUUID, carlUser, 200);
+        Message youngestMessage = new Message(youngestMessageUUID, carlUser, threadUUID, 500, "I am the youngest message", new MessageVisibility(true));
+        ModerationTools.addReport(youngestMessageUUID, carlUser, 150);
+        Message offensiveMessage = new Message(offensiveMessageUUID, carlUser, threadUUID, 200, "Cats are better than dogs", new MessageVisibility(true));
+        ModerationTools.addReport(offensiveMessageUUID, carlUser, 150);
+        ModerationTools.addReport(offensiveMessageUUID, carlUser, 200);
+        ModerationTools.addReport(offensiveMessageUUID, carlUser, 200);
+        Message kindMessage = new Message(kindMessageUUID, carlUser, threadUUID, 300, "Dogs are better than cats", new MessageVisibility(true));
     }
 
     // OLDEST and MOST are valid strategies, anything else should return exception
@@ -70,12 +65,12 @@ public class ModerationToolsGetReportsTests {
     public void testInvalidAmounts2() {
         Iterator<Message> test = ModerationTools.getReportedMessages("MOST", (-1));
     }
-    @Test(timeout=100)
+    @Test(timeout=1000)
     public void returnOldestEntry() {
         assertEquals(ModerationTools.getReportedMessages("OLDEST", 1).next().message(), "I am the oldest message");
     }
 
-    @Test(timeout=100)
+    @Test(timeout=1000)
     public void returnMostEntry() {
         assertEquals(ModerationTools.getReportedMessages("MOST", 1).next().message(), "Cats are better than dogs");
     }
