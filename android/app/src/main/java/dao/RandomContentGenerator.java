@@ -64,6 +64,7 @@ public class RandomContentGenerator {
 		String postName = chooseRandomFromArray(POST_NAMES).formatted(chooseRandomFromArray(TOPICS));
 		Post post = new Post(UUID.randomUUID(), user.getUUID(), postName);
 		PostDAO.getInstance().add(post);
+		AllReactions.reactions.put(post.getUUID(), new int[]{random.nextInt(10),random.nextInt(10),random.nextInt(10),random.nextInt(10),random.nextInt(10)});
 	}
 
 	public static void generateComment() {
@@ -80,5 +81,6 @@ public class RandomContentGenerator {
 
 		Message message = new Message(UUID.randomUUID(), user.getUUID(), post.getUUID(), timestamp, content);
 		post.messages.insert(message);
+		AllReactions.reactions.put(message.id(), new int[]{random.nextInt(10),random.nextInt(10),random.nextInt(10),random.nextInt(10),random.nextInt(10)});
 	}
 }
