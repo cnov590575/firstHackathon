@@ -1,11 +1,15 @@
 package com.example.comp2100miniproject;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,8 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import dao.RandomContentGenerator;
 import dao.UserDAO;
+import dao.model.Message;
 import dao.model.Post;
 import dao.PostDAO;
+import userstate.MemberState;
+import userstate.StateManager;
+
 import com.example.comp2100miniproject.MessageAdapter;
 
 import java.io.Serializable;
@@ -36,10 +44,7 @@ public class PostViewerActivity extends AppCompatActivity {
             return insets;
         });
 
-//        Intent intent = getIntent();
-//        String choice = intent.getStringExtra("parentUUID");
-//        UUID parentuuid = UUID.fromString(choice);
-//        Post post = PostDAO.getInstance().getByUUID(parentuuid);
+
 
 
         Serializable serializableUuid = getIntent().getSerializableExtra("parentUUID");
@@ -58,6 +63,24 @@ public class PostViewerActivity extends AppCompatActivity {
                 MessageAdapter adapter = new MessageAdapter(post.messages);
                 recycler.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                 recycler.setAdapter(adapter);
+                adapter.setOnClickListener(new MessageAdapter.OnClickListener() {
+                    @Override
+                    public void onClick(int i, Message message) {
+                        // 1. Get the specific row view from the RecyclerView layout manager
+                        View rowView = recycler.getLayoutManager().findViewByPosition(i);
+
+                        if (rowView != null) {
+                            // 2. Look for the reaction anchor inside that specific row
+                            View anchorButton = rowView.findViewById(R.id.reactions);
+
+                            // Fallback to the whole row layout if R.id.reactions isn't found
+                            View finalAnchor = (anchorButton != null) ? anchorButton : rowView;
+
+                            // 3. Immediately display the popup window!
+                            adapter.showButtonPopup(finalAnchor, message, ((MemberState) StateManager.getState()).user);
+                        }
+                    }
+                });
                 adapter.notifyDataSetChanged();
             } else {
                 // If the post wasn't found, close the activity to prevent a crash

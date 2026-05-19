@@ -10,9 +10,17 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.UUID;
+
+import dao.AllReactions;
 import dao.PostDAO;
 import dao.RandomContentGenerator;
+import dao.UserDAO;
 import dao.model.Post;
+import dao.model.User;
+import userstate.MemberState;
+import userstate.StateManager;
+import userstate.UserState;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        AllReactions.getAllReactions();
+        AllReactions.getAllUserReactions();
+
+        UserDAO.getInstance().register("TestUser", "Hunter2");
+        StateManager.login("TestUser", "Hunter2");
 
         RandomContentGenerator.populateRandomData();
 
