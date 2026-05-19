@@ -5,54 +5,37 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:outlineProvider="bounds"
+    android:outlineSpotShadowColor="@color/black"
     tools:context=".MessageFragment">
 
+
     <TextView
-        android:id="@+id/replyAuthor"
-        android:layout_width="0dp"
+        android:id="@+id/Author"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="17dp"
+        android:layout_marginTop="10dp"
         android:text="Author"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toStartOf="@+id/timeStamp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MessageContent" />
+
+    <TextView
+        android:id="@+id/MessageContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Message Content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/replyContent"
-        android:layout_width="0dp"
+        android:id="@+id/Date"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:text="Author Content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/replyAuthor" />
-
-    <TextView
-        android:id="@+id/timeStamp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="22dp"
-        android:text="Timestamp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/replyAuthor" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/replyAuthor"
-        app:srcCompat="@drawable/ic_launcher_foreground"
-        tools:src="@tools:sample/avatars" />
+        android:text="xx/xx/xxxx"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
