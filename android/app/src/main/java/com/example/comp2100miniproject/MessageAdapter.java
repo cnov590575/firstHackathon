@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import dao.AllReactions;
 import dao.UserDAO;
@@ -22,18 +22,14 @@ import sorteddata.SortedData;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
-    private Message[] localDataSet;
-    private int length;
+    private final List<Message> localDataSet;
+
     public MessageAdapter(SortedData<Message> dataSet) {
-        int size = 0;
-        ArrayList<Message> list = new ArrayList<>();
+        localDataSet = new ArrayList<>();
         Iterator<Message> iterator = dataSet.getAll();
         while (iterator.hasNext()) {
-            size += 1;
-            list.add(iterator.next());
+            localDataSet.add(iterator.next());
         }
-        localDataSet = list.toArray(new Message[0]);
-        length = size;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,6 +48,80 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messageBody.setText(message.message());
             messageAuthor.setText(UserDAO.getInstance().getByUUID(message.poster()).username());
             messageTime.setText(java.text.DateFormat.getDateTimeInstance().format(new java.util.Date(message.timestamp()))); //
+
+            android.widget.ImageView profilePic = view.findViewById(R.id.msgProfilePic);
+            if (profilePic != null && message.poster() != null) {
+                int[] profilePics = {R.drawable.profilepic1, R.drawable.profilepic2, R.drawable.profilepic3, R.drawable.profilepic4, R.drawable.profilepic5};
+                int index = (message.poster().hashCode() & 0x7fffffff) % 5;
+                profilePic.setImageResource(profilePics[index]);
+            }
+
+            // Update reaction counters in the fragment view to match actual counts
+            try {
+                userstate.MemberState state = (userstate.MemberState) userstate.StateManager.getState();
+                User user = state.user;
+
+                int[] counts = AllReactions.postMsgReactions(message.id());
+                Button angryCounter = view.findViewById(R.id.angryCounter);
+                Button cryCounter = view.findViewById(R.id.cryCounter);
+                Button smileCounter = view.findViewById(R.id.smileCounter);
+                Button heartCounter = view.findViewById(R.id.heartCounter);
+                Button thumbsUpCounter = view.findViewById(R.id.thumbsUpCounter);
+
+                android.widget.ImageView angryEmoji = view.findViewById(R.id.angryEmoji);
+                android.widget.ImageView cryEmoji = view.findViewById(R.id.cryEmoji);
+                android.widget.ImageView smileEmoji = view.findViewById(R.id.smileEmoji);
+                android.widget.ImageView heartEmoji = view.findViewById(R.id.heartEmoji);
+                android.widget.ImageView thumbsUpEmoji = view.findViewById(R.id.thumbsUpEmoji);
+
+                if (counts != null && counts.length >= 5) {
+                    angryCounter.setText(String.valueOf(counts[0]));
+                    cryCounter.setText(String.valueOf(counts[1]));
+                    smileCounter.setText(String.valueOf(counts[2]));
+                    heartCounter.setText(String.valueOf(counts[3]));
+                    thumbsUpCounter.setText(String.valueOf(counts[4]));
+                }
+
+                View.OnClickListener onReactionClick = v -> {
+                    int reactionType = -1;
+                    if (v == angryEmoji || v == angryCounter) reactionType = 0;
+                    else if (v == cryEmoji || v == cryCounter) reactionType = 1;
+                    else if (v == smileEmoji || v == smileCounter) reactionType = 2;
+                    else if (v == heartEmoji || v == heartCounter) reactionType = 3;
+                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) reactionType = 4;
+
+                    if (reactionType != -1) {
+                        if (AllReactions.react(user.getUUID(), message.id(), reactionType)) {
+                            AllReactions.decrementReaction(message.id(), reactionType);
+                        } else {
+                            AllReactions.incrementReaction(message.id(), reactionType);
+                        }
+                        // Refresh counts
+                        int[] updatedCounts = AllReactions.postMsgReactions(message.id());
+                        if (updatedCounts != null && updatedCounts.length >= 5) {
+                            angryCounter.setText(String.valueOf(updatedCounts[0]));
+                            cryCounter.setText(String.valueOf(updatedCounts[1]));
+                            smileCounter.setText(String.valueOf(updatedCounts[2]));
+                            heartCounter.setText(String.valueOf(updatedCounts[3]));
+                            thumbsUpCounter.setText(String.valueOf(updatedCounts[4]));
+                        }
+                    }
+                };
+
+                angryEmoji.setOnClickListener(onReactionClick);
+                angryCounter.setOnClickListener(onReactionClick);
+                cryEmoji.setOnClickListener(onReactionClick);
+                cryCounter.setOnClickListener(onReactionClick);
+                smileEmoji.setOnClickListener(onReactionClick);
+                smileCounter.setOnClickListener(onReactionClick);
+                heartEmoji.setOnClickListener(onReactionClick);
+                heartCounter.setOnClickListener(onReactionClick);
+                thumbsUpEmoji.setOnClickListener(onReactionClick);
+                thumbsUpCounter.setOnClickListener(onReactionClick);
+
+            } catch (Exception ignored) {
+                // If reactions cannot be fetched, keep placeholders as-is
+            }
         }
     }
 
@@ -64,7 +134,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Message newMessage = localDataSet[position];
+        Message newMessage = localDataSet.get(position);
         viewHolder.display(newMessage);
         Button reactionButton = viewHolder.itemView.findViewById(R.id.reactions);
         reactionButton.setOnClickListener(v -> {
@@ -76,7 +146,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return length;
+        return localDataSet.size();
     }
 
     private OnClickListener onClickListener;

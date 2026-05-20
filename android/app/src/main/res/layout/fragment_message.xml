@@ -11,40 +11,243 @@
     tools:context=".MessageFragment">
 
 
+    <ImageView
+        android:id="@+id/msgProfilePic"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
     <TextView
         android:id="@+id/Author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-black"
         android:text="Author"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/MessageContent" />
+        android:typeface="normal"
+        app:layout_constraintStart_toEndOf="@+id/msgProfilePic"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/MessageContent"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Message Content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Posted "
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/Author"
+        app:layout_constraintStart_toEndOf="@+id/Author" />
 
     <TextView
         android:id="@+id/Date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="xx/xx/xxxx"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:fontFamily="sans-serif-medium"
+        android:text="10/07/2025"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+        app:layout_constraintStart_toEndOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/MessageContent"
+        android:layout_width="191dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="2sp"
+        android:paddingBottom="10dp"
+        android:text="Hello"
+        android:textAlignment="viewStart"
+        android:textColor="#4A4B4D"
+        android:textSize="10sp"
+        android:typeface="normal"
+        app:layout_constraintStart_toStartOf="@+id/msgProfilePic"
+        app:layout_constraintTop_toBottomOf="@+id/msgProfilePic" />
 
     <Button
         android:id="@+id/reactions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
 
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:backgroundTint="#EBEBEB"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="React"
+        android:textColor="#595959"
+        android:textSize="8sp"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="346dp"
+        tools:layout_editor_absoluteY="9dp" />
+
+    <Button
+        android:id="@+id/reactionHolder"
+        android:layout_width="160dp"
+        android:layout_height="31dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="#EBEBEB"
+        android:textColor="#EBEBEB"
+        app:iconTint="#EBEBEB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="#EBEBEB"
+        app:strokeColor="#EBEBEB" />
+
+    <ImageView
+        android:id="@+id/angryEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/angry"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/cryEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/angryCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/angryEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/angryEmoji" />
+
+    <ImageView
+        android:id="@+id/cryEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/cry"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/smileEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/cryCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/cryEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/cryEmoji" />
+
+    <ImageView
+        android:id="@+id/smileEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/smile"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/heartEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/smileCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/smileEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/smileEmoji" />
+
+    <ImageView
+        android:id="@+id/heartEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/heart"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/thumbsUpEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/heartCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/heartEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/heartEmoji" />
+
+    <ImageView
+        android:id="@+id/thumbsUpEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/thumbsup"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toStartOf="@+id/reactionHolder"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder" />
+
+    <Button
+        android:id="@+id/thumbsUpCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/thumbsUpEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/thumbsUpEmoji" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/Date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

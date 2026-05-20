@@ -61,7 +61,8 @@ public class PostViewerActivity extends AppCompatActivity {
 
                 RecyclerView recycler = findViewById(R.id.recyclerViewReplies);
                 MessageAdapter adapter = new MessageAdapter(post.messages);
-                recycler.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                recycler.setLayoutManager(new LinearLayoutManager(this));
+                recycler.setHasFixedSize(true);
                 recycler.setAdapter(adapter);
                 adapter.setOnClickListener(new MessageAdapter.OnClickListener() {
                     @Override
@@ -81,7 +82,6 @@ public class PostViewerActivity extends AppCompatActivity {
                         }
                     }
                 });
-                adapter.notifyDataSetChanged();
             } else {
                 // If the post wasn't found, close the activity to prevent a crash
                 finish();

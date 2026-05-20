@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import dao.PostDAO;
@@ -16,7 +15,6 @@ import dao.UserDAO;
 import dao.model.Message;
 import dao.model.Post;
 import dao.model.User;
-import sorteddata.SortedData;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     int size;
@@ -33,8 +31,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
         public void display(Post post) {
-            TextView postBody = view.findViewById(R.id.HomescreenPostContent);
-            TextView postAuthor = view.findViewById(R.id.HomescreenAuthor);
+            TextView postBody = view.findViewById(R.id.textViewPostName);
+            TextView postAuthor = view.findViewById(R.id.textViewPostAuthor);
 
             // 1. Check if the post itself exists
             if (post == null) {
@@ -49,6 +47,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (postAuthor != null) {
                 User author = UserDAO.getInstance().getByUUID(post.poster);
                 postAuthor.setText(author != null ? author.username() : "Anonymous");
+            }
+
+            android.widget.ImageView profilePic = view.findViewById(R.id.msgProfilePic);
+            if (profilePic != null && post.poster != null) {
+                int[] profilePics = {R.drawable.profilepic1, R.drawable.profilepic2, R.drawable.profilepic3, R.drawable.profilepic4, R.drawable.profilepic5};
+                int index = (post.poster.hashCode() & 0x7fffffff) % 5;
+                profilePic.setImageResource(profilePics[index]);
             }
         }
     }
