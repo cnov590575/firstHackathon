@@ -1,0 +1,1 @@
+Make your Android studio project in this folder!

@@ -71,4 +71,18 @@ public class UserDAO extends DAO<User> {
         }
 		return null;
 	}
+
+    public User register(String username, String password, int i) {
+        for (char c : username.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) return null;
+        }
+        if (username.length() < 4 || username.length() > 20) return null;
+        if (password.length() < 4) return null;
+
+        User existingUser = data.get(new User(username));
+        if (existingUser != null) return null;
+
+        User newUser = new User(UUID.randomUUID(), User.Role.Admin, username, password);
+        return data.insert(newUser) ? newUser : null;
+    }
 }

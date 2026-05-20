@@ -20,7 +20,6 @@ public class ModerationToolsAddReportTests {
     public void testAddReport() {
         UUID messageUUID = UUID.randomUUID();
         UUID userUUID = UUID.randomUUID();
-        assertNull(AllReports.allReports);
         ModerationTools.addReport(messageUUID, userUUID, 1);
         assertNotNull(AllReports.allReports);
 

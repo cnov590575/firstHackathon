@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostViewerActivity">
+
+
+    <TextView
+        android:id="@+id/textViewPostAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="22dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Author"
+        android:typeface="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewPostName"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="2sp"
+        android:text="Message Content"
+        android:textAlignment="viewStart"
+        android:textColor="#4A4B4D"
+        android:textSize="20sp"
+        android:typeface="normal"
+        app:layout_constraintStart_toStartOf="@+id/reactionHolder"
+        app:layout_constraintTop_toBottomOf="@+id/reactionHolder" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/alert_dark_frame"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewReplies"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewPostDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Posted 13h ago"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewPostAuthor"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostAuthor" />
+
+    <ImageView
+        android:id="@+id/msgProfilePic"
+        android:layout_width="43dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+
+    <Button
+        android:id="@+id/reactionHolder"
+        android:layout_width="160dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#EBEBEB"
+        android:textColor="#EBEBEB"
+        app:iconTint="#EBEBEB"
+        app:layout_constraintStart_toStartOf="@+id/msgProfilePic"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostDate"
+        app:rippleColor="#EBEBEB"
+        app:strokeColor="#EBEBEB" />
+
+    <ImageView
+        android:id="@+id/angryEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/angry"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/cryEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/angryCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/angryEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/angryEmoji" />
+
+    <ImageView
+        android:id="@+id/cryEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/cry"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/smileEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/cryCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/cryEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/cryEmoji" />
+
+    <ImageView
+        android:id="@+id/smileEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/smile"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/heartEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/smileCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/smileEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/smileEmoji" />
+
+    <ImageView
+        android:id="@+id/heartEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/heart"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toEndOf="@+id/thumbsUpEmoji"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder"
+        app:layout_constraintVertical_bias="0.461"/>
+
+    <Button
+        android:id="@+id/heartCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/heartEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/heartEmoji" />
+
+    <ImageView
+        android:id="@+id/thumbsUpEmoji"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/thumbsup"
+        app:layout_constraintBottom_toBottomOf="@+id/reactionHolder"
+        app:layout_constraintStart_toStartOf="@+id/reactionHolder"
+        app:layout_constraintTop_toTopOf="@+id/reactionHolder" />
+
+    <Button
+        android:id="@+id/thumbsUpCounter"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="#9E9E9E"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="22"
+        android:textSize="7sp"
+        app:layout_constraintStart_toEndOf="@+id/thumbsUpEmoji"
+        app:layout_constraintTop_toBottomOf="@+id/thumbsUpEmoji" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewReplies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostName"
+        tools:listitem="@layout/fragment_message" />
+
+    <Button
+        android:id="@+id/Exit"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:rotation="0"
+        android:rotationX="0"
+        android:text="X"
+        android:textColor="#616161"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
