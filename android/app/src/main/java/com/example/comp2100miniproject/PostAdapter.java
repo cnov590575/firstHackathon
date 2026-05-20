@@ -55,6 +55,71 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 int index = (post.poster.hashCode() & 0x7fffffff) % 5;
                 profilePic.setImageResource(profilePics[index]);
             }
+
+            // Reaction UI Logic
+            try {
+                userstate.MemberState state = (userstate.MemberState) userstate.StateManager.getState();
+                User user = state.user;
+
+                int[] counts = dao.AllReactions.postMsgReactions(post.getUUID());
+                android.widget.Button angryCounter = view.findViewById(R.id.angryCounter);
+                android.widget.Button cryCounter = view.findViewById(R.id.cryCounter);
+                android.widget.Button smileCounter = view.findViewById(R.id.smileCounter);
+                android.widget.Button heartCounter = view.findViewById(R.id.heartCounter);
+                android.widget.Button thumbsUpCounter = view.findViewById(R.id.thumbsUpCounter);
+
+                android.widget.ImageView angryEmoji = view.findViewById(R.id.angryEmoji);
+                android.widget.ImageView cryEmoji = view.findViewById(R.id.cryEmoji);
+                android.widget.ImageView smileEmoji = view.findViewById(R.id.smileEmoji);
+                android.widget.ImageView heartEmoji = view.findViewById(R.id.heartEmoji);
+                android.widget.ImageView thumbsUpEmoji = view.findViewById(R.id.thumbsUpEmoji);
+
+                if (counts != null && counts.length >= 5) {
+                    angryCounter.setText(String.valueOf(counts[0]));
+                    cryCounter.setText(String.valueOf(counts[1]));
+                    smileCounter.setText(String.valueOf(counts[2]));
+                    heartCounter.setText(String.valueOf(counts[3]));
+                    thumbsUpCounter.setText(String.valueOf(counts[4]));
+                }
+
+                View.OnClickListener onReactionClick = v -> {
+                    int reactionType = -1;
+                    if (v == angryEmoji || v == angryCounter) reactionType = 0;
+                    else if (v == cryEmoji || v == cryCounter) reactionType = 1;
+                    else if (v == smileEmoji || v == smileCounter) reactionType = 2;
+                    else if (v == heartEmoji || v == heartCounter) reactionType = 3;
+                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) reactionType = 4;
+
+                    if (reactionType != -1) {
+                        if (dao.AllReactions.react(user.getUUID(), post.getUUID(), reactionType)) {
+                            dao.AllReactions.decrementReaction(post.getUUID(), reactionType);
+                        } else {
+                            dao.AllReactions.incrementReaction(post.getUUID(), reactionType);
+                        }
+                        int[] updatedCounts = dao.AllReactions.postMsgReactions(post.getUUID());
+                        if (updatedCounts != null && updatedCounts.length >= 5) {
+                            angryCounter.setText(String.valueOf(updatedCounts[0]));
+                            cryCounter.setText(String.valueOf(updatedCounts[1]));
+                            smileCounter.setText(String.valueOf(updatedCounts[2]));
+                            heartCounter.setText(String.valueOf(updatedCounts[3]));
+                            thumbsUpCounter.setText(String.valueOf(updatedCounts[4]));
+                        }
+                    }
+                };
+
+                angryEmoji.setOnClickListener(onReactionClick);
+                angryCounter.setOnClickListener(onReactionClick);
+                cryEmoji.setOnClickListener(onReactionClick);
+                cryCounter.setOnClickListener(onReactionClick);
+                smileEmoji.setOnClickListener(onReactionClick);
+                smileCounter.setOnClickListener(onReactionClick);
+                heartEmoji.setOnClickListener(onReactionClick);
+                heartCounter.setOnClickListener(onReactionClick);
+                thumbsUpEmoji.setOnClickListener(onReactionClick);
+                thumbsUpCounter.setOnClickListener(onReactionClick);
+
+            } catch (Exception ignored) {
+            }
         }
     }
 

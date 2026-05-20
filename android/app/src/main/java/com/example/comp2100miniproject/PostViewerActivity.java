@@ -59,29 +59,83 @@ public class PostViewerActivity extends AppCompatActivity {
                 titleText.setText(post.topic);
                 authorText.setText(UserDAO.getInstance().getByUUID(post.poster).username());
 
+                android.widget.ImageView profilePic = findViewById(R.id.msgProfilePic);
+                if (profilePic != null && post.poster != null) {
+                    int[] profilePics = {R.drawable.profilepic1, R.drawable.profilepic2, R.drawable.profilepic3, R.drawable.profilepic4, R.drawable.profilepic5};
+                    int index = (post.poster.hashCode() & 0x7fffffff) % 5;
+                    profilePic.setImageResource(profilePics[index]);
+                }
+
+                // Setup reactions for the main post
+                try {
+                    userstate.MemberState state = (userstate.MemberState) userstate.StateManager.getState();
+                    dao.model.User user = state.user;
+
+                    int[] counts = dao.AllReactions.postMsgReactions(post.getUUID());
+                    android.widget.Button angryCounter = findViewById(R.id.angryCounter);
+                    android.widget.Button cryCounter = findViewById(R.id.cryCounter);
+                    android.widget.Button smileCounter = findViewById(R.id.smileCounter);
+                    android.widget.Button heartCounter = findViewById(R.id.heartCounter);
+                    android.widget.Button thumbsUpCounter = findViewById(R.id.thumbsUpCounter);
+
+                    android.widget.ImageView angryEmoji = findViewById(R.id.angryEmoji);
+                    android.widget.ImageView cryEmoji = findViewById(R.id.cryEmoji);
+                    android.widget.ImageView smileEmoji = findViewById(R.id.smileEmoji);
+                    android.widget.ImageView heartEmoji = findViewById(R.id.heartEmoji);
+                    android.widget.ImageView thumbsUpEmoji = findViewById(R.id.thumbsUpEmoji);
+
+                    if (counts != null && counts.length >= 5) {
+                        angryCounter.setText(String.valueOf(counts[0]));
+                        cryCounter.setText(String.valueOf(counts[1]));
+                        smileCounter.setText(String.valueOf(counts[2]));
+                        heartCounter.setText(String.valueOf(counts[3]));
+                        thumbsUpCounter.setText(String.valueOf(counts[4]));
+                    }
+
+                    View.OnClickListener onReactionClick = v -> {
+                        int reactionType = -1;
+                        if (v == angryEmoji || v == angryCounter) reactionType = 0;
+                        else if (v == cryEmoji || v == cryCounter) reactionType = 1;
+                        else if (v == smileEmoji || v == smileCounter) reactionType = 2;
+                        else if (v == heartEmoji || v == heartCounter) reactionType = 3;
+                        else if (v == thumbsUpEmoji || v == thumbsUpCounter) reactionType = 4;
+
+                        if (reactionType != -1) {
+                            if (dao.AllReactions.react(user.getUUID(), post.getUUID(), reactionType)) {
+                                dao.AllReactions.decrementReaction(post.getUUID(), reactionType);
+                            } else {
+                                dao.AllReactions.incrementReaction(post.getUUID(), reactionType);
+                            }
+                            int[] updatedCounts = dao.AllReactions.postMsgReactions(post.getUUID());
+                            if (updatedCounts != null && updatedCounts.length >= 5) {
+                                angryCounter.setText(String.valueOf(updatedCounts[0]));
+                                cryCounter.setText(String.valueOf(updatedCounts[1]));
+                                smileCounter.setText(String.valueOf(updatedCounts[2]));
+                                heartCounter.setText(String.valueOf(updatedCounts[3]));
+                                thumbsUpCounter.setText(String.valueOf(updatedCounts[4]));
+                            }
+                        }
+                    };
+
+                    angryEmoji.setOnClickListener(onReactionClick);
+                    angryCounter.setOnClickListener(onReactionClick);
+                    cryEmoji.setOnClickListener(onReactionClick);
+                    cryCounter.setOnClickListener(onReactionClick);
+                    smileEmoji.setOnClickListener(onReactionClick);
+                    smileCounter.setOnClickListener(onReactionClick);
+                    heartEmoji.setOnClickListener(onReactionClick);
+                    heartCounter.setOnClickListener(onReactionClick);
+                    thumbsUpEmoji.setOnClickListener(onReactionClick);
+                    thumbsUpCounter.setOnClickListener(onReactionClick);
+
+                } catch (Exception ignored) {
+                }
+
                 RecyclerView recycler = findViewById(R.id.recyclerViewReplies);
                 MessageAdapter adapter = new MessageAdapter(post.messages);
                 recycler.setLayoutManager(new LinearLayoutManager(this));
                 recycler.setHasFixedSize(true);
                 recycler.setAdapter(adapter);
-                adapter.setOnClickListener(new MessageAdapter.OnClickListener() {
-                    @Override
-                    public void onClick(int i, Message message) {
-                        // 1. Get the specific row view from the RecyclerView layout manager
-                        View rowView = recycler.getLayoutManager().findViewByPosition(i);
-
-                        if (rowView != null) {
-                            // 2. Look for the reaction anchor inside that specific row
-                            View anchorButton = rowView.findViewById(R.id.reactions);
-
-                            // Fallback to the whole row layout if R.id.reactions isn't found
-                            View finalAnchor = (anchorButton != null) ? anchorButton : rowView;
-
-                            // 3. Immediately display the popup window!
-                            adapter.showButtonPopup(finalAnchor, message, ((MemberState) StateManager.getState()).user);
-                        }
-                    }
-                });
             } else {
                 // If the post wasn't found, close the activity to prevent a crash
                 finish();
