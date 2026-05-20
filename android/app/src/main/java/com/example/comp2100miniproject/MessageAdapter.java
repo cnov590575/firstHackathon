@@ -1,5 +1,7 @@
 package com.example.comp2100miniproject;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,11 +87,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 View.OnClickListener onReactionClick = v -> {
                     int reactionType = -1;
                     View viewToAnimate = null;
-                    if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; }
-                    else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; }
-                    else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; }
-                    else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; }
-                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; }
+                    View viewToColor = null;
+                    if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; viewToColor = angryCounter; }
+                    else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; viewToColor = cryCounter;}
+                    else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; viewToColor = smileCounter;}
+                    else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; viewToColor = heartCounter;}
+                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; viewToColor = thumbsUpCounter;}
 
                     if (viewToAnimate != null) {
                         View finalViewToAnimate = viewToAnimate;
@@ -103,8 +106,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     if (reactionType != -1) {
                         if (AllReactions.react(user.getUUID(), message.id(), reactionType)) {
                             AllReactions.decrementReaction(message.id(), reactionType);
+                            viewToColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
                         } else {
                             AllReactions.incrementReaction(message.id(), reactionType);
+                            viewToColor.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
                         }
                         // Refresh counts
                         int[] updatedCounts = AllReactions.postMsgReactions(message.id());

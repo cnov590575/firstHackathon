@@ -2,6 +2,8 @@ package com.example.comp2100miniproject;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,12 +107,12 @@ public class PostViewerActivity extends AppCompatActivity {
                     View.OnClickListener onReactionClick = v -> {
                         int reactionType = -1;
                         View viewToAnimate = null;
-                        if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; }
-                        else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; }
-                        else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; }
-                        else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; }
-                        else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; }
-
+                        View viewToColor = null;
+                        if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; viewToColor = angryCounter; }
+                        else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; viewToColor = cryCounter;}
+                        else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; viewToColor = smileCounter;}
+                        else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; viewToColor = heartCounter;}
+                        else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; viewToColor = thumbsUpCounter;}
                         if (viewToAnimate != null) {
                             View finalViewToAnimate = viewToAnimate;
                             finalViewToAnimate.animate().scaleX(1.3f).scaleY(1.3f).rotation(10f).setDuration(100).withEndAction(() -> {
@@ -123,8 +125,11 @@ public class PostViewerActivity extends AppCompatActivity {
                         if (reactionType != -1) {
                             if (dao.AllReactions.react(user.getUUID(), post.getUUID(), reactionType)) {
                                 dao.AllReactions.decrementReaction(post.getUUID(), reactionType);
+                                viewToColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+
                             } else {
                                 dao.AllReactions.incrementReaction(post.getUUID(), reactionType);
+                                viewToColor.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
                             }
                             int[] updatedCounts = dao.AllReactions.postMsgReactions(post.getUUID());
                             if (updatedCounts != null && updatedCounts.length >= 5) {
