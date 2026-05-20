@@ -10,6 +10,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="#DC1010"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -21,6 +22,8 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#F0F0F0"
+            android:backgroundTint="#F0F0F0"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -29,12 +32,13 @@
                 android:id="@+id/textViewHomeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="40dp"
-                android:text="Miniproject Reading App"
+                android:fontFamily="sans-serif-black"
+                android:text="Home"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textColor="#000000"
+                android:textSize="28sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,12 +46,90 @@
                 android:id="@+id/recyclerViewPosts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="4dp"
+                android:background="#F0F0F0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewHomeName"
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
                 tools:listitem="@layout/fragment_homescreen_post" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="27dp"
+                android:layout_marginEnd="25dp"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbars="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewHomeName">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#2196F3"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:shadowColor="#00FFFFFF"
+                        android:text="My Feed"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/button8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#E2E2E2"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Popular"
+                        android:textColor="#999999"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/button12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#E2E2E2"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="All"
+                        android:textColor="#999999"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/button11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#E2E2E2"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Custom"
+                        android:textColor="#999999"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </HorizontalScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

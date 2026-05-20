@@ -56,8 +56,18 @@ public class PostViewerActivity extends AppCompatActivity {
             if (post != null) {
                 TextView titleText = findViewById(R.id.textViewPostName);
                 TextView authorText = findViewById(R.id.textViewPostAuthor);
+                TextView dateText = findViewById(R.id.textViewPostDate);
+                
                 titleText.setText(post.topic);
                 authorText.setText(UserDAO.getInstance().getByUUID(post.poster).username());
+                
+                java.util.Iterator<dao.model.Message> it = post.messages.getAll();
+                if (it.hasNext()) {
+                    long timestamp = it.next().timestamp();
+                    dateText.setText(java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(new java.util.Date(timestamp)));
+                } else {
+                    dateText.setText("No date");
+                }
 
                 android.widget.ImageView profilePic = findViewById(R.id.msgProfilePic);
                 if (profilePic != null && post.poster != null) {
@@ -94,11 +104,21 @@ public class PostViewerActivity extends AppCompatActivity {
 
                     View.OnClickListener onReactionClick = v -> {
                         int reactionType = -1;
-                        if (v == angryEmoji || v == angryCounter) reactionType = 0;
-                        else if (v == cryEmoji || v == cryCounter) reactionType = 1;
-                        else if (v == smileEmoji || v == smileCounter) reactionType = 2;
-                        else if (v == heartEmoji || v == heartCounter) reactionType = 3;
-                        else if (v == thumbsUpEmoji || v == thumbsUpCounter) reactionType = 4;
+                        View viewToAnimate = null;
+                        if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; }
+                        else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; }
+                        else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; }
+                        else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; }
+                        else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; }
+
+                        if (viewToAnimate != null) {
+                            View finalViewToAnimate = viewToAnimate;
+                            finalViewToAnimate.animate().scaleX(1.3f).scaleY(1.3f).rotation(10f).setDuration(100).withEndAction(() -> {
+                                finalViewToAnimate.animate().rotation(-10f).setDuration(100).withEndAction(() -> {
+                                    finalViewToAnimate.animate().scaleX(1f).scaleY(1f).rotation(0f).setDuration(100).start();
+                                }).start();
+                            }).start();
+                        }
 
                         if (reactionType != -1) {
                             if (dao.AllReactions.react(user.getUUID(), post.getUUID(), reactionType)) {

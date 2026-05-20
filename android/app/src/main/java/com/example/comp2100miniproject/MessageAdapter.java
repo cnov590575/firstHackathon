@@ -47,7 +47,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
             messageBody.setText(message.message());
             messageAuthor.setText(UserDAO.getInstance().getByUUID(message.poster()).username());
-            messageTime.setText(java.text.DateFormat.getDateTimeInstance().format(new java.util.Date(message.timestamp()))); //
+            messageTime.setText(java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(new java.util.Date(message.timestamp()))); //
 
             android.widget.ImageView profilePic = view.findViewById(R.id.msgProfilePic);
             if (profilePic != null && message.poster() != null) {
@@ -84,11 +84,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
                 View.OnClickListener onReactionClick = v -> {
                     int reactionType = -1;
-                    if (v == angryEmoji || v == angryCounter) reactionType = 0;
-                    else if (v == cryEmoji || v == cryCounter) reactionType = 1;
-                    else if (v == smileEmoji || v == smileCounter) reactionType = 2;
-                    else if (v == heartEmoji || v == heartCounter) reactionType = 3;
-                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) reactionType = 4;
+                    View viewToAnimate = null;
+                    if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; }
+                    else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; }
+                    else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; }
+                    else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; }
+                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; }
+
+                    if (viewToAnimate != null) {
+                        View finalViewToAnimate = viewToAnimate;
+                        finalViewToAnimate.animate().scaleX(1.3f).scaleY(1.3f).rotation(10f).setDuration(100).withEndAction(() -> {
+                            finalViewToAnimate.animate().rotation(-10f).setDuration(100).withEndAction(() -> {
+                                finalViewToAnimate.animate().scaleX(1f).scaleY(1f).rotation(0f).setDuration(100).start();
+                            }).start();
+                        }).start();
+                    }
 
                     if (reactionType != -1) {
                         if (AllReactions.react(user.getUUID(), message.id(), reactionType)) {

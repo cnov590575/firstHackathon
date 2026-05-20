@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewPostDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -76,7 +76,7 @@
         android:textColor="#EBEBEB"
         app:iconTint="#EBEBEB"
         app:layout_constraintStart_toStartOf="@+id/msgProfilePic"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostDate"
         app:rippleColor="#EBEBEB"
         app:strokeColor="#EBEBEB" />
 

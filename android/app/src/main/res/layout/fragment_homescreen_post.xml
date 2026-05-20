@@ -7,16 +7,31 @@
     android:layout_height="wrap_content"
     tools:context=".HomescreenPostFragment">
 
+    <Button
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="#FFF"
+        android:clickable="false"
+        android:focusable="false"
+        android:text="Button"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cryCounter"
+        app:layout_constraintStart_toEndOf="@+id/textViewPostAuthor"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textViewPostAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="22dp"
         android:fontFamily="sans-serif-black"
         android:text="Author"
         android:typeface="normal"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/msgProfilePic"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -34,20 +49,8 @@
         app:layout_constraintStart_toStartOf="@+id/reactionHolder"
         app:layout_constraintTop_toBottomOf="@+id/reactionHolder" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="fitXY"
-        android:src="@android:drawable/alert_dark_frame"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPostName" />
-
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewPostDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -61,7 +64,7 @@
         android:id="@+id/msgProfilePic"
         android:layout_width="43dp"
         android:layout_height="42dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -77,7 +80,7 @@
         android:textColor="#EBEBEB"
         app:iconTint="#EBEBEB"
         app:layout_constraintStart_toStartOf="@+id/msgProfilePic"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostDate"
         app:rippleColor="#EBEBEB"
         app:strokeColor="#EBEBEB" />
 
@@ -224,5 +227,11 @@
         android:textSize="7sp"
         app:layout_constraintStart_toEndOf="@+id/thumbsUpEmoji"
         app:layout_constraintTop_toBottomOf="@+id/thumbsUpEmoji" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostName"
+        tools:layout_editor_absoluteX="94dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
