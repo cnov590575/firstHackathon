@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -63,12 +64,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 userstate.MemberState state = (userstate.MemberState) userstate.StateManager.getState();
                 User user = state.user;
 
+                AllReactions.getAllUserReactions().put(user.getUUID(), (AllReactions.getAllUserReactions().get(user.getUUID())==null) ? new HashMap<>() : AllReactions.getAllUserReactions().get(user.getUUID()));
+                AllReactions.getAllUserReactions().get(user.getUUID()).put(message.id(), (AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id())==null) ? new Boolean[]{false, false, false, false, false} : AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id()));
                 int[] counts = AllReactions.postMsgReactions(message.id());
-                Button angryCounter = view.findViewById(R.id.angryCounter);
-                Button cryCounter = view.findViewById(R.id.cryCounter);
-                Button smileCounter = view.findViewById(R.id.smileCounter);
-                Button heartCounter = view.findViewById(R.id.heartCounter);
-                Button thumbsUpCounter = view.findViewById(R.id.thumbsUpCounter);
+                android.widget.Button angryCounter = view.findViewById(R.id.angryCounter);
+                angryCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id())[0]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+                android.widget.Button cryCounter = view.findViewById(R.id.cryCounter);
+                cryCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id())[1]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+                android.widget.Button smileCounter = view.findViewById(R.id.smileCounter);
+                smileCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id())[2]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+                android.widget.Button heartCounter = view.findViewById(R.id.heartCounter);
+                heartCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id())[3]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+                android.widget.Button thumbsUpCounter = view.findViewById(R.id.thumbsUpCounter);
+                thumbsUpCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(message.id())[4]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+
 
                 android.widget.ImageView angryEmoji = view.findViewById(R.id.angryEmoji);
                 android.widget.ImageView cryEmoji = view.findViewById(R.id.cryEmoji);

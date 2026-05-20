@@ -30,11 +30,15 @@ public class AllReactions {
 
     //Returns the previous reaction state and switches it
     public static boolean react(UUID user, UUID postOrMessage, int reaction) {
+        System.out.println(user);
+        System.out.println(postOrMessage);
         if (!userReactions.containsKey(user)) {
             userReactions.put(user, new HashMap<>());
         }
         if (!(userReactions.get(user).containsKey(postOrMessage))){
             userReactions.get(user).put(postOrMessage, new Boolean[]{false, false, false, false, false});
+            System.out.println("You fucked up");
+
         }
         Boolean ret = userReactions.get(user).get(postOrMessage)[reaction];
         userReactions.get(user).get(postOrMessage)[reaction]=!userReactions.get(user).get(postOrMessage)[reaction];
