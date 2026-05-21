@@ -28,7 +28,7 @@ public class RandomContentGenerator {
 			RandomContentGenerator.generatePost();
 		}
 
-		for (int i = 0; i < 25000; i++) {
+		for (int i = 0; i < 500; i++) {
 			RandomContentGenerator.generateComment();
 		}
 	}

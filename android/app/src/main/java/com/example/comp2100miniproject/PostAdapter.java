@@ -3,15 +3,23 @@ package com.example.comp2100miniproject;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 import dao.AllReactions;
 import dao.PostDAO;
@@ -19,136 +27,42 @@ import dao.UserDAO;
 import dao.model.Message;
 import dao.model.Post;
 import dao.model.User;
+import userstate.MemberState;
+import userstate.StateManager;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
-    int size;
+
+    // Load all posts into a list once — avoids O(n) getAtIndex on every bind
+    private final List<Post> posts;
+
     public PostAdapter() {
-        this.size = -1;
+        this.posts = new ArrayList<>();
+        Iterator<Post> it = PostDAO.getInstance().getAll();
+        while (it.hasNext()) posts.add(it.next());
     }
 
+    // Cache all views in ViewHolder — avoids findViewById on every bind
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final View view;
+        final TextView postBody, postAuthor, postDate;
+        final ImageView profilePic, angryEmoji, cryEmoji, smileEmoji, heartEmoji, thumbsUpEmoji;
+        final Button angryCounter, cryCounter, smileCounter, heartCounter, thumbsUpCounter;
 
         public ViewHolder(View view) {
             super(view);
-            this.view = view;
-        }
-
-        public void display(Post post) {
-            TextView postBody = view.findViewById(R.id.textViewPostName);
-            TextView postAuthor = view.findViewById(R.id.textViewPostAuthor);
-            TextView postDate = view.findViewById(R.id.textViewPostDate);
-
-            // 1. Check if the post itself exists
-            if (post == null) {
-                if (postBody != null) postBody.setText("Loading...");
-                return;
-            }
-
-            // 2. Set the topic safely
-            if (postBody != null) postBody.setText(post.topic);
-
-            // 3. Check if the User/Author exists
-            if (postAuthor != null) {
-                User author = UserDAO.getInstance().getByUUID(post.poster);
-                postAuthor.setText(author != null ? author.username() : "Anonymous");
-            }
-            
-            if (postDate != null) {
-                java.util.Iterator<dao.model.Message> it = post.messages.getAll();
-                if (it.hasNext()) {
-                    long timestamp = it.next().timestamp();
-                    postDate.setText(java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(new java.util.Date(timestamp)));
-                } else {
-                    postDate.setText("No date");
-                }
-            }
-
-            android.widget.ImageView profilePic = view.findViewById(R.id.msgProfilePic);
-            if (profilePic != null && post.poster != null) {
-                int[] profilePics = {R.drawable.profilepic1, R.drawable.profilepic2, R.drawable.profilepic3, R.drawable.profilepic4, R.drawable.profilepic5};
-                int index = (post.poster.hashCode() & 0x7fffffff) % 5;
-                profilePic.setImageResource(profilePics[index]);
-            }
-
-            // Reaction UI Logic
-            try {
-                userstate.MemberState state = (userstate.MemberState) userstate.StateManager.getState();
-                User user = state.user;
-                AllReactions.getAllUserReactions().put(user.getUUID(), (AllReactions.getAllUserReactions().get(user.getUUID())==null) ? new HashMap<>() : AllReactions.getAllUserReactions().get(user.getUUID()));
-                AllReactions.getAllUserReactions().get(user.getUUID()).put(post.getUUID(), (AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID())==null) ? new Boolean[]{false, false, false, false, false} : AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID()));
-                int[] counts = dao.AllReactions.postMsgReactions(post.getUUID());
-                android.widget.Button angryCounter = view.findViewById(R.id.angryCounter); angryCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID())[0]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-                android.widget.Button cryCounter = view.findViewById(R.id.cryCounter);cryCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID())[1]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-                android.widget.Button smileCounter = view.findViewById(R.id.smileCounter);smileCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID())[2]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-                android.widget.Button heartCounter = view.findViewById(R.id.heartCounter);heartCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID())[3]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-                android.widget.Button thumbsUpCounter = view.findViewById(R.id.thumbsUpCounter);thumbsUpCounter.setBackgroundTintList((AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID())[4]) ? ColorStateList.valueOf(Color.RED) : ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-
-                android.widget.ImageView angryEmoji = view.findViewById(R.id.angryEmoji);
-                android.widget.ImageView cryEmoji = view.findViewById(R.id.cryEmoji);
-                android.widget.ImageView smileEmoji = view.findViewById(R.id.smileEmoji);
-                android.widget.ImageView heartEmoji = view.findViewById(R.id.heartEmoji);
-                android.widget.ImageView thumbsUpEmoji = view.findViewById(R.id.thumbsUpEmoji);
-
-                if (counts != null && counts.length >= 5) {
-                    angryCounter.setText(String.valueOf(counts[0]));
-                    cryCounter.setText(String.valueOf(counts[1]));
-                    smileCounter.setText(String.valueOf(counts[2]));
-                    heartCounter.setText(String.valueOf(counts[3]));
-                    thumbsUpCounter.setText(String.valueOf(counts[4]));
-                }
-
-                View.OnClickListener onReactionClick = v -> {
-                    int reactionType = -1;
-                    View viewToAnimate = null;
-                    View viewToColor = null;
-                    if (v == angryEmoji || v == angryCounter) { reactionType = 0; viewToAnimate = angryEmoji; viewToColor = angryCounter; }
-                    else if (v == cryEmoji || v == cryCounter) { reactionType = 1; viewToAnimate = cryEmoji; viewToColor = cryCounter;}
-                    else if (v == smileEmoji || v == smileCounter) { reactionType = 2; viewToAnimate = smileEmoji; viewToColor = smileCounter;}
-                    else if (v == heartEmoji || v == heartCounter) { reactionType = 3; viewToAnimate = heartEmoji; viewToColor = heartCounter;}
-                    else if (v == thumbsUpEmoji || v == thumbsUpCounter) { reactionType = 4; viewToAnimate = thumbsUpEmoji; viewToColor = thumbsUpCounter;}
-
-                    if(viewToAnimate != null) {
-                        View finalViewToAnimate = viewToAnimate;
-                        finalViewToAnimate.animate().scaleX(1.3f).scaleY(1.3f).rotation(10f).setDuration(100).withEndAction(() -> {
-                            finalViewToAnimate.animate().rotation(-10f).setDuration(100).withEndAction(() -> {
-                                finalViewToAnimate.animate().scaleX(1f).scaleY(1f).rotation(0f).setDuration(100).start();
-                            }).start();
-                        }).start();
-                    }
-
-                    if (reactionType != -1) {
-                        if (dao.AllReactions.react(user.getUUID(), post.getUUID(), reactionType)) {
-                            dao.AllReactions.decrementReaction(post.getUUID(), reactionType);
-                            viewToColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-                        } else {
-                            dao.AllReactions.incrementReaction(post.getUUID(), reactionType);
-                            viewToColor.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                        }
-                        int[] updatedCounts = dao.AllReactions.postMsgReactions(post.getUUID());
-                        if (updatedCounts != null && updatedCounts.length >= 5) {
-                            angryCounter.setText(String.valueOf(updatedCounts[0]));
-                            cryCounter.setText(String.valueOf(updatedCounts[1]));
-                            smileCounter.setText(String.valueOf(updatedCounts[2]));
-                            heartCounter.setText(String.valueOf(updatedCounts[3]));
-                            thumbsUpCounter.setText(String.valueOf(updatedCounts[4]));
-                        }
-                    }
-                };
-
-                angryEmoji.setOnClickListener(onReactionClick);
-                angryCounter.setOnClickListener(onReactionClick);
-                cryEmoji.setOnClickListener(onReactionClick);
-                cryCounter.setOnClickListener(onReactionClick);
-                smileEmoji.setOnClickListener(onReactionClick);
-                smileCounter.setOnClickListener(onReactionClick);
-                heartEmoji.setOnClickListener(onReactionClick);
-                heartCounter.setOnClickListener(onReactionClick);
-                thumbsUpEmoji.setOnClickListener(onReactionClick);
-                thumbsUpCounter.setOnClickListener(onReactionClick);
-
-            } catch (Exception ignored) {
-            }
+            postBody       = view.findViewById(R.id.textViewPostName);
+            postAuthor     = view.findViewById(R.id.textViewPostAuthor);
+            postDate       = view.findViewById(R.id.textViewPostDate);
+            profilePic     = view.findViewById(R.id.msgProfilePic);
+            angryEmoji     = view.findViewById(R.id.angryEmoji);
+            cryEmoji       = view.findViewById(R.id.cryEmoji);
+            smileEmoji     = view.findViewById(R.id.smileEmoji);
+            heartEmoji     = view.findViewById(R.id.heartEmoji);
+            thumbsUpEmoji  = view.findViewById(R.id.thumbsUpEmoji);
+            angryCounter   = view.findViewById(R.id.angryCounter);
+            cryCounter     = view.findViewById(R.id.cryCounter);
+            smileCounter   = view.findViewById(R.id.smileCounter);
+            heartCounter   = view.findViewById(R.id.heartCounter);
+            thumbsUpCounter = view.findViewById(R.id.thumbsUpCounter);
         }
     }
 
@@ -160,37 +74,100 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Post post = PostDAO.getInstance().getAtIndex(position);
+    public void onBindViewHolder(ViewHolder vh, int position) {
+        Post post = posts.get(position); // O(1) instead of O(n)
 
-        viewHolder.display(post);
+        if (post == null) {
+            vh.postBody.setText("Loading...");
+            return;
+        }
 
-        viewHolder.itemView.setOnClickListener(v -> {
+        vh.postBody.setText(post.topic);
+
+        User author = UserDAO.getInstance().getByUUID(post.poster);
+        vh.postAuthor.setText(author != null ? author.username() : "Anonymous");
+
+        Iterator<Message> it = post.messages.getAll();
+        if (it.hasNext()) {
+            long timestamp = it.next().timestamp();
+            vh.postDate.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                    .format(new Date(timestamp)));
+        } else {
+            vh.postDate.setText("No date");
+        }
+
+        if (post.poster != null) {
+            int[] profilePics = {R.drawable.profilepic1, R.drawable.profilepic2, R.drawable.profilepic3,
+                    R.drawable.profilepic4, R.drawable.profilepic5};
+            vh.profilePic.setImageResource(profilePics[(post.poster.hashCode() & 0x7fffffff) % 5]);
+        }
+
+        // Reactions
+        try {
+            MemberState state = (MemberState) StateManager.getState();
+            Log.d("Persistence", "current user UUID: " + state.user.getUUID());
+            Log.d("Persistence", "userReactions keys: " + AllReactions.getAllUserReactions().keySet());
+            User user = state.user;
+
+
+            HashMap<UUID, Boolean[]> userMap = AllReactions.getAllUserReactions().get(user.getUUID());
+            Boolean[] existing = userMap != null ? userMap.get(post.getUUID()) : null;
+            Log.d("Persistence", "before computeIfAbsent: " + java.util.Arrays.toString(existing));
+            AllReactions.getAllUserReactions()
+                    .computeIfAbsent(user.getUUID(), k -> new HashMap<>())
+                    .computeIfAbsent(post.getUUID(), k -> new Boolean[]{false, false, false, false, false});
+
+
+            Boolean[] userReacted = AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID());
+           // Log.d("Persistence", "post " + post.getUUID() + " userReacted: " + java.util.Arrays.toString(userReacted));
+
+            int[] counts = AllReactions.postMsgReactions(post.getUUID());
+
+            Button[] counters = {vh.angryCounter, vh.cryCounter, vh.smileCounter, vh.heartCounter, vh.thumbsUpCounter};
+            View[] emojis    = {vh.angryEmoji,   vh.cryEmoji,   vh.smileEmoji,   vh.heartEmoji,   vh.thumbsUpEmoji};
+
+            for (int i = 0; i < 5; i++) {
+                counters[i].setText(String.valueOf(counts[i]));
+                counters[i].setBackgroundTintList(ColorStateList.valueOf(
+                        userReacted[i] ? Color.RED : Color.parseColor("#9E9E9E")));
+            }
+
+            // Use arrays in lambda to avoid creating a new listener object per reaction button
+            for (int i = 0; i < 5; i++) {
+                final int reactionType = i;
+                final Button counter = counters[i];
+                final View emoji = emojis[i];
+                View.OnClickListener listener = v -> {
+                    emoji.animate().scaleX(1.3f).scaleY(1.3f).rotation(10f).setDuration(100)
+                            .withEndAction(() -> emoji.animate().rotation(-10f).setDuration(100)
+                                    .withEndAction(() -> emoji.animate().scaleX(1f).scaleY(1f).rotation(0f).setDuration(100).start()).start()).start();
+
+                    if (AllReactions.react(user.getUUID(), post.getUUID(), reactionType)) {
+                        AllReactions.decrementReaction(post.getUUID(), reactionType);
+                        counter.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+                    } else {
+                        AllReactions.incrementReaction(post.getUUID(), reactionType);
+                        counter.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                    }
+                    Boolean[] we = AllReactions.getAllUserReactions().get(user.getUUID()).get(post.getUUID());
+                    Log.d("Persistence", "after react: " + java.util.Arrays.toString(we));
+                    int[] updated = AllReactions.postMsgReactions(post.getUUID());
+                    for (int j = 0; j < 5; j++) counters[j].setText(String.valueOf(updated[j]));
+                };
+                counters[i].setOnClickListener(listener);
+                emojis[i].setOnClickListener(listener);
+            }
+        } catch (Exception ignored) {}
+
+        vh.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostViewerActivity.class);
-            intent.putExtra("parentUUID", post.getUUID());
+            intent.putExtra("parentUUID", post.getUUID()); // UUID not String
             v.getContext().startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        if (this.size == -1) {
-            Iterator<Post> iterator = PostDAO.getInstance().getAll();
-            this.size += 1;
-            while (iterator.hasNext() && this.size < 500) {
-                this.size += 1;
-            }
-        }
-        return size;
-    }
-
-    private OnClickListener onClickListener;
-
-    public void setOnClickListener(OnClickListener listener) {
-        this.onClickListener = listener;
-    }
-
-    public interface OnClickListener {
-        void onClick(int i, Message message);
+        return posts.size();
     }
 }
