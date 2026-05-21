@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import persistentdata.DataManager;
 
 public class AllReactions {
     //Array : 1 - Thumbs up, 2 - Heart, 3 - Smile/Laugh, 4 - Crying Face, 5 - Anger
-    protected static HashMap<UUID, int[]> reactions;
+    public static HashMap<UUID, int[]> reactions;
     // Hashmap: Links a user to a hashmap of all the message UUIDs and whether they have
     // already reacted that specific reaction to that specific message
-    protected static HashMap<UUID, HashMap<UUID, Boolean[]>> userReactions;
+    public static HashMap<UUID, HashMap<UUID, Boolean[]>> userReactions;
 
 
     public static HashMap<UUID, int[]> getAllReactions(){
@@ -42,7 +46,10 @@ public class AllReactions {
         }
         Boolean ret = userReactions.get(user).get(postOrMessage)[reaction];
         userReactions.get(user).get(postOrMessage)[reaction]=!userReactions.get(user).get(postOrMessage)[reaction];
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> DataManager.getInstance().writeAll());
         return ret;
+
     }
 
     /**
