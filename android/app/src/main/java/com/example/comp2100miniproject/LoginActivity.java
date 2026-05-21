@@ -28,15 +28,7 @@ import userstate.StateManager;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private void clearPersistedData() {
-        for (String name : new String[]{"users", "posts", "messages", "reactions", "userReactions"}) {
-            File f = new File(getFilesDir(), name + ".csv");
-            if (f.exists()) {
-                f.delete();
-                Log.d("Persistence", "Deleted " + name + ".csv");
-            }
-        }
-    }
+
     private static boolean dataInitialised = false;
 
     @Override
@@ -112,12 +104,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void seedTestData() {
         if (UserDAO.getInstance().getAll().hasNext()) {
-            Log.d("Persistence", "Data loaded from disk ✅ — skipping seed");
+            Log.d("Persistence", "data loaded from disk");
             return;
         }
-        Log.d("Persistence", "No data found — seeding fresh data");
+        Log.d("Persistence", "no data found - generate random data");
         RandomContentGenerator.populateRandomData();
-        // Synchronous on first seed — too important to risk losing
         DataManager.getInstance().writeAll();
     }
 
