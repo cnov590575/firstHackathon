@@ -3,6 +3,7 @@ package persistentdata;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -78,14 +79,21 @@ public class DataManager {
 		reactionPipeline.readTo(e ->
 				AllReactions.reactions.put(e.getKey(), e.getValue()));
 
+
 		userReactionPipeline.readTo(e -> {
+			Log.d("Persistence", "loading userReaction: user=" + e.getKey() +
+					" target=" + e.getValue().getKey() +
+					" bools=" + java.util.Arrays.toString(e.getValue().getValue()));
 			AllReactions.userReactions
 					.computeIfAbsent(e.getKey(), k -> new HashMap<>())
 					.put(e.getValue().getKey(), e.getValue().getValue());
 		});
+
 	}
 
 	public void writeAll() {
+		Log.d("Persistence", "writeAll called from: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+
 		Log.d("Persistence", "writeAll started");
 		userPipeline.writeFrom(users.getAll());
 		Log.d("Persistence", "users written");
@@ -106,11 +114,13 @@ public class DataManager {
 		Log.d("Persistence", "messages written");
 
 
-		// Flatten reactions map into entries
-		reactionPipeline.writeFrom(AllReactions.reactions.entrySet().iterator());
+		Log.d("Persistence", "reactions map size: " + AllReactions.getAllReactions().size());
+		Log.d("Persistence", "userReactions map size: " + AllReactions.getAllUserReactions().size());
+		reactionPipeline.writeFrom(AllReactions.getAllReactions().entrySet().iterator());
 		Log.d("Persistence", "reactions written");
 
-		// Flatten nested userReactions map into (userUUID, targetUUID, booleans) entries
+
+
 		List<Map.Entry<UUID, Map.Entry<UUID, Boolean[]>>> flatUserReactions = new ArrayList<>();
 		for (Map.Entry<UUID, HashMap<UUID, Boolean[]>> outer : AllReactions.userReactions.entrySet()) {
 			for (Map.Entry<UUID, Boolean[]> inner : outer.getValue().entrySet()) {

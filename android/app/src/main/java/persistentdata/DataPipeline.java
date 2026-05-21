@@ -43,14 +43,14 @@ public class DataPipeline<T, S> {
 					if (serialized == null) continue;
 					formattedWriter.putNext(serialized);
 				} catch (EmptyStackException | NoSuchElementException e) {
-					Log.w("Persistence", "Iterator exhausted early — stopping write");
+
 					break;
 				}
 			}
 
 			writer.close();
-		} catch (EmptyStackException | NoSuchElementException | IOException e) {
-			Log.w("Persistence", "Iterator exhausted early in " + filename + " — stopping write");
+		} catch (EmptyStackException | NoSuchElementException | IOException ignored) {
+
 		}
 
 	}
