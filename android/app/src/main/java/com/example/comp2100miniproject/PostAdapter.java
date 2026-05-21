@@ -32,7 +32,7 @@ import userstate.StateManager;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
-    // Load all posts into a list once — avoids O(n) getAtIndex on every bind
+    //put posts in list first so we dont have to traverse tree on every bind when getatindex is called
     private final List<Post> posts;
 
     public PostAdapter() {
@@ -41,7 +41,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         while (it.hasNext()) posts.add(it.next());
     }
 
-    // Cache all views in ViewHolder — avoids findViewById on every bind
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView postBody, postAuthor, postDate;
         final ImageView profilePic, angryEmoji, cryEmoji, smileEmoji, heartEmoji, thumbsUpEmoji;

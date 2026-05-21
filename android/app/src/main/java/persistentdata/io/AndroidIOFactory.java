@@ -32,7 +32,7 @@ public class AndroidIOFactory implements IOFactory {
         File file = new File(storageDir, filename + ".csv");
         Log.d("Persistence", "Reading from: " + file.getAbsolutePath() + " exists: " + file.exists());
         if (!file.exists()) return null;
-        return new BufferedReader(new FileReader(file)); // ✅ BufferedReader supports mark/reset
+        return new BufferedReader(new FileReader(file));
     }
 
     @Override
@@ -51,9 +51,7 @@ public class AndroidIOFactory implements IOFactory {
             @Override
             public void close() throws IOException {
                 inner.close();
-                // Atomic rename — if this succeeds the file is complete, if not the old file is untouched
                 if (!tempFile.renameTo(finalFile)) {
-                    // Fallback if rename fails (e.g. cross-device)
                     Files.copy(tempFile.toPath(), finalFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     tempFile.delete();
                 }

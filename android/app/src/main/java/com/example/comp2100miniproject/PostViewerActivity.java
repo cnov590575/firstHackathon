@@ -170,7 +170,7 @@ public class PostViewerActivity extends AppCompatActivity {
                 recycler.setHasFixedSize(true);
                 recycler.setAdapter(adapter);
             } else {
-                // If the post wasn't found, close the activity to prevent a crash
+
                 finish();
             }
         } else {
