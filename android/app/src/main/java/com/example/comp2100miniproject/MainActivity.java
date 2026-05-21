@@ -94,5 +94,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Persistence", "No data found — seeding fresh data");
         RandomContentGenerator.populateRandomData();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RecyclerView recycler = findViewById(R.id.recyclerViewPosts);
+        if (recycler != null && recycler.getAdapter() != null) {
+            recycler.getAdapter().notifyDataSetChanged();
+        }
+    }
 
 }
