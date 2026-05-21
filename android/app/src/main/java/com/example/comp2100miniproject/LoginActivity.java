@@ -2,6 +2,7 @@ package com.example.comp2100miniproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,23 +14,36 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import dao.AllReactions;
 import dao.RandomContentGenerator;
+import dao.UserDAO;
+import persistentdata.DataManager;
+import persistentdata.io.AndroidIOFactory;
 import userstate.AdminState;
 import userstate.StateManager;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Guards one-time app-wide initialisation so it doesn't repeat if the user
-    // logs out and the launcher activity is recreated.
+    private void clearPersistedData() {
+        for (String name : new String[]{"users", "posts", "messages", "reactions", "userReactions"}) {
+            File f = new File(getFilesDir(), name + ".csv");
+            if (f.exists()) {
+                f.delete();
+                Log.d("Persistence", "Deleted " + name + ".csv");
+            }
+        }
+    }
     private static boolean dataInitialised = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // If state was retained across a process-survived recreation and the user
-        // is already logged in, skip straight to the home screen.
+
         if (StateManager.isLoggedIn()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -44,19 +58,20 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        // App data bootstrap (moved here from MainActivity since this is now the launcher).
         if (!dataInitialised) {
             AllReactions.getAllReactions();
             AllReactions.getAllUserReactions();
-            RandomContentGenerator.populateRandomData();
+            DataManager.init(new AndroidIOFactory(this));
+            DataManager.getInstance().readAll();
+            seedTestData();
             dataInitialised = true;
         }
 
-        EditText usernameField   = findViewById(R.id.editTextUsername);
-        EditText passwordField   = findViewById(R.id.editTextPassword);
-        TextView errorText       = findViewById(R.id.textViewError);
-        Button   loginButton     = findViewById(R.id.buttonLogin);
-        Button   registerButton  = findViewById(R.id.buttonRegister);
+        EditText usernameField  = findViewById(R.id.editTextUsername);
+        EditText passwordField  = findViewById(R.id.editTextPassword);
+        TextView errorText      = findViewById(R.id.textViewError);
+        Button   loginButton    = findViewById(R.id.buttonLogin);
+        Button   registerButton = findViewById(R.id.buttonRegister);
 
         loginButton.setOnClickListener(v -> {
             String username = usernameField.getText().toString().trim();
@@ -84,8 +99,6 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // StateManager.register() returns true when the GuestState transitions to a
-            // MemberState — i.e. the new user is now logged in. No second login call needed.
             if (StateManager.register(username, password)) {
                 clearError(errorText);
                 goToHome();
@@ -95,6 +108,17 @@ public class LoginActivity extends AppCompatActivity {
                                 "and passwords at least 4 characters. The username may already be taken.");
             }
         });
+    }
+
+    private void seedTestData() {
+        if (UserDAO.getInstance().getAll().hasNext()) {
+            Log.d("Persistence", "Data loaded from disk ✅ — skipping seed");
+            return;
+        }
+        Log.d("Persistence", "No data found — seeding fresh data");
+        RandomContentGenerator.populateRandomData();
+        // Synchronous on first seed — too important to risk losing
+        DataManager.getInstance().writeAll();
     }
 
     private void showError(TextView errorText, String message) {
@@ -108,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToHome() {
-        // Admins and members currently share MainActivity. If/when an AdminActivity
-        // exists, branch here on (StateManager.getState() instanceof AdminState).
         if (StateManager.getState() instanceof AdminState) {
             // TODO: route to admin-only screen once it exists.
         }

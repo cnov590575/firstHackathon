@@ -49,8 +49,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             TextView messageTime = view.findViewById(R.id.Date);
 
             messageBody.setText(message.message());
-            messageAuthor.setText(UserDAO.getInstance().getByUUID(message.poster()).username());
-            messageTime.setText(java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(new java.util.Date(message.timestamp()))); //
+            User author = UserDAO.getInstance().getByUUID(message.poster());
+            messageAuthor.setText(author != null ? author.username() : "Anonymous");            messageTime.setText(java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(new java.util.Date(message.timestamp()))); //
 
             android.widget.ImageView profilePic = view.findViewById(R.id.msgProfilePic);
             if (profilePic != null && message.poster() != null) {
