@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,11 +28,21 @@ import userstate.StateManager;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private void clearPersistedData() {
+        for (String name : new String[]{"users", "posts", "messages", "reactions", "userReactions"}) {
+            File f = new File(getFilesDir(), name + ".csv");
+            if (f.exists()) {
+                f.delete();
+                Log.d("Persistence", "Deleted " + name + ".csv");
+            }
+        }
+    }
     private static boolean dataInitialised = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if (StateManager.isLoggedIn()) {
             startActivity(new Intent(this, MainActivity.class));
@@ -106,9 +117,8 @@ public class LoginActivity extends AppCompatActivity {
         }
         Log.d("Persistence", "No data found — seeding fresh data");
         RandomContentGenerator.populateRandomData();
-        // Save immediately after seeding so data is never lost
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> DataManager.getInstance().writeAll());
+        // Synchronous on first seed — too important to risk losing
+        DataManager.getInstance().writeAll();
     }
 
     private void showError(TextView errorText, String message) {
