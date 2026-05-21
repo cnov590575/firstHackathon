@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="#DC1010"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F0F0F0"
+            android:backgroundTint="#F0F0F0">
+
+            <ImageView
+                android:id="@+id/imageViewLogo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginTop="48dp"
+                android:contentDescription="App logo"
+                android:src="@drawable/ic_app_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Welcome"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="#000000"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+
+            <TextView
+                android:id="@+id/textViewSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Log in or register to continue"
+                android:textColor="#4A4B4D"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewWelcome" />
+
+            <!-- White rounded card behind the form (same Button-as-background trick the rest of the app uses) -->
+            <Button
+                android:id="@+id/cardBackground"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="25dp"
+                android:backgroundTint="#FFFFFF"
+                android:clickable="false"
+                android:focusable="false"
+                app:cornerRadius="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/cardBottomSpace"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewSubtitle" />
+
+            <TextView
+                android:id="@+id/labelUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Username"
+                android:textColor="#4A4B4D"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toTopOf="@+id/cardBackground" />
+
+            <EditText
+                android:id="@+id/editTextUsername"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="15dp"
+                android:autofillHints="username"
+                android:fontFamily="sans-serif-medium"
+                android:hint="Your username"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="#4A4B4D"
+                android:textColorHint="#9E9E9E"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/cardBackground"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/labelUsername" />
+
+            <TextView
+                android:id="@+id/labelPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Password"
+                android:textColor="#4A4B4D"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/editTextUsername" />
+
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="15dp"
+                android:autofillHints="password"
+                android:fontFamily="sans-serif-medium"
+                android:hint="Your password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="#4A4B4D"
+                android:textColorHint="#9E9E9E"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/cardBackground"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/labelPassword" />
+
+            <TextView
+                android:id="@+id/textViewError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:fontFamily="sans-serif-medium"
+                android:text=""
+                android:textColor="#DC1010"
+                android:textSize="13sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/cardBackground"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
+                tools:text="Incorrect username or password."
+                tools:visibility="visible" />
+
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="#2196F3"
+                android:fontFamily="sans-serif-medium"
+                android:text="Log In"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/cardBackground"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/textViewError" />
+
+            <Button
+                android:id="@+id/buttonRegister"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="#E2E2E2"
+                android:fontFamily="sans-serif-medium"
+                android:text="Register"
+                android:textColor="#4A4B4D"
+                android:textSize="16sp"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/cardBackground"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+
+            <!-- Pads the bottom interior of the white card -->
+            <Space
+                android:id="@+id/cardBottomSpace"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/cardBackground"
+                app:layout_constraintStart_toStartOf="@+id/cardBackground"
+                app:layout_constraintTop_toBottomOf="@+id/buttonRegister" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

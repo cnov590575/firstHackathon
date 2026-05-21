@@ -1,7 +1,8 @@
 package com.example.comp2100miniproject;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,28 +12,24 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import dao.AllReactions;
-import dao.PostDAO;
-import dao.RandomContentGenerator;
-import dao.UserDAO;
-import dao.model.Post;
-import dao.model.User;
-import persistentdata.DataManager;
-import persistentdata.io.AndroidIOFactory;
-import userstate.MemberState;
 import userstate.StateManager;
-import userstate.UserState;
 
 public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Defensive guard: if we somehow land here without a session
+        // (e.g. process recreation cleared state, or a bad deep-link),
+        // bounce back to the login screen instead of crashing the adapters,
+        // which cast the current state to MemberState.
+        if (!StateManager.isLoggedIn()) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -41,66 +38,26 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        DataManager.init(new AndroidIOFactory(this));
-        AllReactions.getAllReactions();
-        AllReactions.getAllUserReactions();
+        // NOTE: AllReactions init, RandomContentGenerator.populateRandomData(),
+        // and the test-user login that previously lived here have moved to
+        // LoginActivity, which is now the launcher. By the time we reach this
+        // activity, a user is authenticated and data is populated.
 
+        RecyclerView recycler = findViewById(R.id.recyclerViewPosts);
+        PostAdapter adapter = new PostAdapter();
+        recycler.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        recycler.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            DataManager.getInstance().readAll();
-            try {
-                File f = new File(getFilesDir(), "userReactions.csv");
-                FileInputStream fis = new FileInputStream(f);
-                byte[] buf = new byte[300];
-                int read = fis.read(buf, 0, 300);
-                fis.close();
-                Log.d("Persistence", "userReactions.csv: " + new String(buf, 0, read));
-            } catch (Exception e) {
-                Log.e("Persistence", "Could not read userReactions: " + e.getMessage());
-            }
-            seedTestData();
-
-            UserDAO.getInstance().register("TestUser", "Hunter2");
-            StateManager.login("TestUser", "Hunter2");
-
-            runOnUiThread(() -> {
-                RecyclerView recycler = findViewById(R.id.recyclerViewPosts);
-                PostAdapter adapter = new PostAdapter();
-                recycler.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                recycler.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            });
+        Button logoutButton = findViewById(R.id.buttonLogout);
+        logoutButton.setOnClickListener(v -> {
+            StateManager.logout();
+            Intent intent = new Intent(this, LoginActivity.class);
+            // Clear the back stack so pressing Back from the login screen
+            // doesn't pop us back into a now-stale MainActivity.
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
     }
-    private void clearPersistedData() {
-        for (String name : new String[]{"users", "posts", "messages", "reactions", "userReactions"}) {
-            File f = new File(getFilesDir(), name + ".csv");
-            if (f.exists()) {
-                f.delete();
-                Log.d("Persistence", "Deleted " + name + ".csv");
-            }
-        }
-    }
-    private void seedTestData() {
-        boolean usersExist = UserDAO.getInstance().getAll().hasNext();
-        boolean postsExist = PostDAO.getInstance().getAll().hasNext();
-        Log.d("Persistence", "seedTestData — usersExist: " + usersExist + " postsExist: " + postsExist);
-
-        if (usersExist) {
-            Log.d("Persistence", "Data loaded from disk ✅ — skipping seed");
-            return;
-        }
-        Log.d("Persistence", "No data found — seeding fresh data");
-        RandomContentGenerator.populateRandomData();
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RecyclerView recycler = findViewById(R.id.recyclerViewPosts);
-        if (recycler != null && recycler.getAdapter() != null) {
-            recycler.getAdapter().notifyDataSetChanged();
-        }
-    }
-
 }
