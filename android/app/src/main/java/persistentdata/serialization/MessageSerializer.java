@@ -13,6 +13,7 @@ public class MessageSerializer implements Serializer<Message, String[]> {
 
 	@Override
 	public String[] serialize(Message object) {
+		if (object == null) return null; // skip nulls
 		return new String[] {object.id().toString(), object.poster().toString(), object.thread().toString(), String.valueOf(object.timestamp()), object.message()};
 	}
 

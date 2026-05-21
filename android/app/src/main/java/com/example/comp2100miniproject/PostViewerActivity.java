@@ -25,6 +25,7 @@ import dao.UserDAO;
 import dao.model.Message;
 import dao.model.Post;
 import dao.PostDAO;
+import dao.model.User;
 import userstate.MemberState;
 import userstate.StateManager;
 
@@ -63,8 +64,10 @@ public class PostViewerActivity extends AppCompatActivity {
                 TextView dateText = findViewById(R.id.textViewPostDate);
                 
                 titleText.setText(post.topic);
-                authorText.setText(UserDAO.getInstance().getByUUID(post.poster).username());
-                
+
+                User author = UserDAO.getInstance().getByUUID(post.poster);
+                authorText.setText(author != null ? author.username() : "Anonymous");
+
                 java.util.Iterator<dao.model.Message> it = post.messages.getAll();
                 if (it.hasNext()) {
                     long timestamp = it.next().timestamp();
