@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Red circular background -->
+    <path
+        android:fillColor="#DC1010"
+        android:pathData="M48,4 C72.3,4 92,23.7 92,48 C92,72.3 72.3,92 48,92 C23.7,92 4,72.3 4,48 C4,23.7 23.7,4 48,4 Z" />
+
+    <!-- White rounded speech bubble with downward-pointing tail -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,30 L68,30 A 4,4 0 0,1 72,34 L72,54 A 4,4 0 0,1 68,58 L42,58 L34,66 L34,58 L28,58 A 4,4 0 0,1 24,54 L24,34 A 4,4 0 0,1 28,30 Z" />
+
+    <!-- Three red dots inside the bubble -->
+    <path
+        android:fillColor="#DC1010"
+        android:pathData="M36,44 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#DC1010"
+        android:pathData="M48,44 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#DC1010"
+        android:pathData="M60,44 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+</vector>

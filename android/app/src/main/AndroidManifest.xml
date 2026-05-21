@@ -12,13 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.COMP2100Miniproject">
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false">
         </activity>
         <activity
             android:name=".PostViewerActivity"
